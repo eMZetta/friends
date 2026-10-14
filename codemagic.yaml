@@ -1,0 +1,63 @@
+# Cloud build for iOS: builds on a Codemagic Mac and uploads to TestFlight.
+# One-time setup is described in docs/RELEASE.md.
+#
+# Starts when a tag like v1.0.0 is pushed (or manually from the Codemagic UI).
+
+workflows:
+  ios-testflight:
+    name: iOS → TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    integrations:
+      # Name of the App Store Connect API key added under Codemagic → Team → Integrations.
+      app_store_connect: Lumi App Store Connect
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: ch.lumikids.app # keep in sync with capacitor.config.ts
+      vars:
+        # Numeric "Apple ID" of the app, shown in App Store Connect → App Information.
+        APP_STORE_APPLE_ID: 0000000000
+        XCODE_PROJECT: ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+      node: latest
+      xcode: latest
+
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: 'v*'
+
+    scripts:
+      - name: Install dependencies
+        script: yarn install --frozen-lockfile
+      - name: Lint, type-check and test
+        script: |
+          yarn lint
+          yarn type-check
+          yarn vitest run
+      - name: Build web app and copy it into the iOS project
+        script: |
+          yarn build
+          npx cap sync ios
+      - name: Set up code signing
+        script: xcode-project use-profiles
+      - name: Increment build number
+        script: |
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" || echo 0)
+          cd ios/App
+          agvtool new-version -all $((LATEST + 1))
+      - name: Build IPA
+        script: xcode-project build-ipa --project "$XCODE_PROJECT" --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
