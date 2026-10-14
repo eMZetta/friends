@@ -1,22 +1,34 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 
+import { DIFFICULTIES } from '@/lib/difficulty'
+import { GAME_IDS, LIMIT_OPTIONS } from '@/lib/games'
 import { numberToWords, useT, type Lang } from '@/lib/i18n'
 import { hasMusic } from '@/lib/music'
 import { randInt } from '@/lib/random'
 import { useSettings } from '@/stores/settings'
+import { useUsage } from '@/stores/usage'
 
 // Apple's Kids Category requires a parental gate in front of settings and outside links.
 // The number is spelled out, so it needs reading skills a 2–5 year old doesn't have yet.
 
 const t = useT()
 const settings = useSettings()
+const usage = useUsage()
+
+// After a few wrong answers the gate pauses, so a child can't just guess its way in.
+const MAX_TRIES = 3
+const LOCK_MS = 30_000
 
 const open = ref(false)
 const unlocked = ref(false)
 const target = ref(0)
 const entry = ref('')
 const shake = ref(false)
+const tries = ref(0)
+const lockedUntil = ref(0)
+const locked = ref(false)
+let lockTimer: number | undefined
 
 const targetWords = computed(() => numberToWords(target.value, settings.lang))
 
@@ -27,10 +39,21 @@ function newChallenge() {
   entry.value = ''
 }
 
+function startLock() {
+  locked.value = true
+  window.clearTimeout(lockTimer)
+  lockTimer = window.setTimeout(() => {
+    locked.value = false
+    tries.value = 0
+    newChallenge()
+  }, Math.max(0, lockedUntil.value - Date.now()))
+}
+
 function show() {
   newChallenge()
   unlocked.value = false
   open.value = true
+  if (lockedUntil.value > Date.now()) startLock()
 }
 
 function close() {
@@ -38,19 +61,25 @@ function close() {
 }
 
 function press(digit: number) {
-  if (entry.value.length >= 2) return
+  if (locked.value || shake.value || entry.value.length >= 2) return
   entry.value += String(digit)
   if (entry.value.length < 2) return
   if (Number(entry.value) === target.value) {
+    tries.value = 0
     unlocked.value = true
   } else {
     shake.value = true
+    tries.value++
+    if (tries.value >= MAX_TRIES) lockedUntil.value = Date.now() + LOCK_MS
     window.setTimeout(() => {
       shake.value = false
-      newChallenge()
+      if (tries.value >= MAX_TRIES) startLock()
+      else newChallenge()
     }, 450)
   }
 }
+
+onBeforeUnmount(() => window.clearTimeout(lockTimer))
 
 const languages: { id: Lang; label: string }[] = [
   { id: 'de', label: 'Deutsch' },
@@ -73,14 +102,17 @@ const languages: { id: Lang; label: string }[] = [
         <template v-if="!unlocked">
           <h2>{{ t.parents.gateTitle }}</h2>
           <p>{{ t.parents.gateAsk }}</p>
-          <p class="words">{{ targetWords }}</p>
-          <div class="entry" :class="{ shake }">
-            <span>{{ entry[0] ?? '_' }}</span>
-            <span>{{ entry[1] ?? '_' }}</span>
-          </div>
-          <div class="keypad">
-            <button v-for="d in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]" :key="d" @click="press(d)">{{ d }}</button>
-          </div>
+          <p v-if="locked" class="words">{{ t.parents.locked }}</p>
+          <template v-else>
+            <p class="words">{{ targetWords }}</p>
+            <div class="entry" :class="{ shake }">
+              <span>{{ entry[0] ?? '_' }}</span>
+              <span>{{ entry[1] ?? '_' }}</span>
+            </div>
+            <div class="keypad">
+              <button v-for="d in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]" :key="d" @click="press(d)">{{ d }}</button>
+            </div>
+          </template>
         </template>
 
         <template v-else>
@@ -117,6 +149,49 @@ const languages: { id: Lang; label: string }[] = [
             <div class="toggle">
               <button :class="{ active: settings.music }" @click="settings.music = true">{{ t.parents.on }}</button>
               <button :class="{ active: !settings.music }" @click="settings.music = false">{{ t.parents.off }}</button>
+            </div>
+          </div>
+          <div class="row">
+            <span>{{ t.parents.difficulty }}</span>
+            <div class="toggle">
+              <button
+                v-for="d in DIFFICULTIES"
+                :key="d"
+                :class="{ active: settings.difficulty === d }"
+                @click="settings.difficulty = d"
+              >
+                {{ t.parents.levels[d] }}
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <span>{{ t.parents.timeLimit }}</span>
+            <div class="toggle">
+              <button
+                v-for="m in LIMIT_OPTIONS"
+                :key="m"
+                :class="{ active: settings.dailyLimit === m }"
+                @click="settings.dailyLimit = m"
+              >
+                {{ m === 0 ? t.parents.unlimited : m }}
+              </button>
+            </div>
+          </div>
+          <div class="row played">
+            <span>{{ t.parents.played(usage.minutes) }}</span>
+            <button class="reset" @click="usage.reset()">{{ t.parents.resetToday }}</button>
+          </div>
+          <div class="games">
+            <span>{{ t.parents.games }}</span>
+            <div class="chips">
+              <button
+                v-for="g in GAME_IDS"
+                :key="g"
+                :class="{ active: !settings.hiddenGames.includes(g) }"
+                @click="settings.toggleGame(g, GAME_IDS.length)"
+              >
+                {{ t.games[g] }}
+              </button>
             </div>
           </div>
           <p class="about">{{ t.parents.tips }}</p>
@@ -246,6 +321,47 @@ p {
 .toggle button.active {
   background: #3a86ff;
   color: #fff;
+}
+
+.played {
+  font-size: 16px;
+  color: #6b7a8c;
+}
+
+.reset {
+  padding: 6px 12px;
+  border-radius: 9px;
+  background: #eef3f8;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.games {
+  padding: 12px 0;
+  text-align: left;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.chips button {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #eef3f8;
+  color: #8a97a6;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: line-through;
+}
+
+.chips button.active {
+  background: #3a86ff;
+  color: #fff;
+  text-decoration: none;
 }
 
 .about {

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 
+import { levelFor } from '@/lib/difficulty'
 import { messages, numberToWords } from '@/lib/i18n'
 import { shuffle } from '@/lib/random'
 import { voiceKey } from '@/lib/speech'
@@ -16,6 +17,14 @@ describe('numberToWords', () => {
   it('spells English numbers', () => {
     expect(numberToWords(24, 'en')).toBe('twenty-four')
     expect(numberToWords(99, 'en')).toBe('ninety-nine')
+  })
+})
+
+describe('levelFor', () => {
+  it('climbs slower on easy and starts higher on hard', () => {
+    expect(levelFor(4, 'easy')).toBe(2)
+    expect(levelFor(4, 'normal')).toBe(4)
+    expect(levelFor(0, 'hard')).toBe(3)
   })
 })
 

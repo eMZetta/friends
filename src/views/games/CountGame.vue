@@ -6,6 +6,7 @@ import GameShell from '@/components/GameShell.vue'
 import RewardBurst from '@/components/RewardBurst.vue'
 import { centerOf, useIdleHints } from '@/lib/hints'
 import { useT, type CountThing } from '@/lib/i18n'
+import { useLevel } from '@/lib/difficulty'
 import { pick, randInt, shuffle } from '@/lib/random'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
@@ -14,6 +15,7 @@ const THINGS: CountThing[] = ['apple', 'star', 'fish', 'flower']
 
 const t = useT()
 
+const levelOf = useLevel()
 const round = ref(0)
 const thing = ref<CountThing>('apple')
 const count = ref(0)
@@ -32,7 +34,7 @@ function maxForRound(r: number) {
 }
 
 function newRound() {
-  const max = maxForRound(round.value)
+  const max = maxForRound(levelOf(round.value))
   let n = randInt(1, max)
   if (n === count.value) n = (n % max) + 1
   count.value = n

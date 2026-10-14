@@ -7,6 +7,7 @@ import ShapeIcon from '@/components/ShapeIcon.vue'
 import { COLOR_IDS, COLORS } from '@/lib/colors'
 import { centerOf, useIdleHints } from '@/lib/hints'
 import { useT, type ShapeKind } from '@/lib/i18n'
+import { useLevel } from '@/lib/difficulty'
 import { pick, randInt, shuffle } from '@/lib/random'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
@@ -27,6 +28,7 @@ const MAX_SHOWN = 8
 const t = useT()
 const prompt = computed(() => t.value.patternsPrompt)
 
+const levelOf = useLevel()
 const round = ref(0)
 const sequence = ref<Token[]>([])
 const answer = ref<Token | null>(null)
@@ -44,7 +46,7 @@ function unitsForRound(r: number) {
 }
 
 function newRound() {
-  const unit = pick(unitsForRound(round.value))
+  const unit = pick(unitsForRound(levelOf(round.value)))
   const letters = [...new Set(unit)]
 
   // Kinds and colours both differ, so the pattern can be read either way.

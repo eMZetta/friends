@@ -5,6 +5,7 @@ import GameShell from '@/components/GameShell.vue'
 import RewardBurst from '@/components/RewardBurst.vue'
 import ShapeIcon from '@/components/ShapeIcon.vue'
 import { COLORS } from '@/lib/colors'
+import { useLevel } from '@/lib/difficulty'
 import { dragBetween, useIdleHints } from '@/lib/hints'
 import { useT, type ShapeKind } from '@/lib/i18n'
 import { shuffle } from '@/lib/random'
@@ -23,6 +24,7 @@ const KINDS: ShapeKind[] = ['circle', 'square', 'triangle', 'star', 'heart', 'he
 const t = useT()
 const prompt = computed(() => t.value.shapesPrompt)
 
+const levelOf = useLevel()
 const round = ref(0)
 const pieces = ref<Piece[]>([])
 const holeOrder = ref<Piece[]>([])
@@ -40,7 +42,7 @@ function setHoleEl(id: number, el: unknown) {
 
 function newRound() {
   // Start with two shapes and slowly add more, up to four.
-  const count = Math.min(2 + Math.floor(round.value / 2), 4)
+  const count = Math.min(2 + Math.floor(levelOf(round.value) / 2), 4)
   const colors = shuffle(Object.values(COLORS))
   const list = shuffle(KINDS)
     .slice(0, count)

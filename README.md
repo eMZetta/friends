@@ -14,6 +14,9 @@ Keine Werbung, kein Tracking, keine Logins, alles offline.
 | Memory  | Gedächtnis, Paare finden (2–6 Paare)         |
 | Muster  | Muster fortsetzen (AB, AAB, ABB, ABC, AABB)  |
 | Musik   | Xylophon: frei spielen oder Kinderlieder nachspielen |
+| Schatten | Tier am Schatten erkennen, Wortschatz        |
+| Groß & Klein | Größen vergleichen (groß/klein, größte/kleinste) |
+| Malen   | Frei malen mit dem Finger, Farben wählen     |
 
 Sprachen: Deutsch und Englisch (Einstellung hinter dem Eltern-Gate).
 
@@ -42,7 +45,9 @@ yarn lint
 - Hilfe bei Untätigkeit: Aufgabe wird wiederholt, danach zeigt eine Hand, was zu tun ist.
 - Beim ersten Öffnen eines Spiels führt die Hand es einmal vor.
 - Spiel verlassen nur durch Gedrückthalten des Haus-Knopfs.
-- Einstellungen nur über das Eltern-Gate (ausgeschriebene Zahl eintippen).
+- Einstellungen nur über das Eltern-Gate (ausgeschriebene Zahl eintippen). Nach 3 Fehlversuchen sperrt es 30 Sekunden.
+- Im Eltern-Bereich: Sprache, Geräusche, Sprachausgabe, Musik, Tageslimit (Lumi macht danach Pause) und Spiele ausblenden.
+  Die Spielzeit wird nur lokal auf dem Gerät gezählt.
 
 ## Kompatibilität
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AnimalIcon from '@/components/AnimalIcon.vue'
@@ -11,12 +11,14 @@ import { COLORS } from '@/lib/colors'
 import { useT } from '@/lib/i18n'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
+import { useSettings } from '@/stores/settings'
 import { useStickers } from '@/stores/stickers'
 
 const t = useT()
 const router = useRouter()
 const lumiHappy = ref(false)
 const stickers = useStickers()
+const settings = useSettings()
 
 const tiles = [
   { route: 'shapes', key: 'shapes', color: '#ffb3c7' },
@@ -26,7 +28,12 @@ const tiles = [
   { route: 'memory', key: 'memory', color: '#d4c8ff' },
   { route: 'patterns', key: 'patterns', color: '#ffc9a3' },
   { route: 'music', key: 'music', color: '#ffd1dc' },
+  { route: 'shadows', key: 'shadows', color: '#c9c3f5' },
+  { route: 'sizes', key: 'sizes', color: '#c6ecc0' },
+  { route: 'paint', key: 'paint', color: '#ffe3a8' },
 ] as const
+
+const visibleTiles = computed(() => tiles.filter((tile) => !settings.hiddenGames.includes(tile.key)))
 
 function play(route: (typeof tiles)[number]['route']) {
   sfx.tap()
@@ -68,7 +75,7 @@ function greet() {
 
       <nav class="tiles">
         <button
-          v-for="tile in tiles"
+          v-for="tile in visibleTiles"
           :key="tile.key"
           class="tile"
           :style="{ background: tile.color }"
@@ -114,6 +121,20 @@ function greet() {
                   rx="4"
                   :fill="COLORS[c]"
                 />
+              </svg>
+            </template>
+            <template v-else-if="tile.key === 'shadows'">
+              <div class="mini shadow-art"><AnimalIcon kind="cat" /></div>
+              <div class="mini"><AnimalIcon kind="cat" /></div>
+            </template>
+            <template v-else-if="tile.key === 'sizes'">
+              <div class="mini tall"><AnimalIcon kind="pig" /></div>
+              <div class="mini tiny"><AnimalIcon kind="pig" /></div>
+            </template>
+            <template v-else-if="tile.key === 'paint'">
+              <svg viewBox="0 0 100 70" class="xylo-art" aria-hidden="true">
+                <path d="M8 50 Q28 8 48 40 T92 22" :stroke="COLORS.red" stroke-width="10" fill="none" stroke-linecap="round" />
+                <path d="M12 62 Q40 36 62 58 T92 48" :stroke="COLORS.blue" stroke-width="10" fill="none" stroke-linecap="round" />
               </svg>
             </template>
             <template v-else>
@@ -275,12 +296,12 @@ function greet() {
 }
 
 .tiles {
-  --tile: clamp(130px, min(16vw, 26vh), 220px);
+  --tile: clamp(110px, min(12vw, 26vh), 220px);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 24px;
-  max-width: calc(var(--tile) * 4 + 24px * 3);
+  max-width: calc(var(--tile) * 5 + 24px * 4);
 }
 
 .tile {
@@ -319,6 +340,18 @@ function greet() {
 
 .xylo-art {
   width: 80%;
+}
+
+.mini.tall {
+  width: 42%;
+}
+
+.mini.tiny {
+  width: 24%;
+}
+
+.shadow-art :deep(svg) {
+  filter: brightness(0) opacity(0.7);
 }
 
 .mini.small {

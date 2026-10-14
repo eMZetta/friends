@@ -5,6 +5,7 @@ import AnimalIcon from '@/components/AnimalIcon.vue'
 import GameShell from '@/components/GameShell.vue'
 import ProgressDots from '@/components/ProgressDots.vue'
 import RewardBurst from '@/components/RewardBurst.vue'
+import { useLevel } from '@/lib/difficulty'
 import { centerOf, useIdleHints } from '@/lib/hints'
 import { ANIMALS, useT, type AnimalKind } from '@/lib/i18n'
 import { pick, shuffle } from '@/lib/random'
@@ -15,6 +16,7 @@ const GOAL = 3
 
 const t = useT()
 
+const levelOf = useLevel()
 const round = ref(0)
 const setId = ref(0)
 const found = ref(0)
@@ -30,7 +32,7 @@ const prompt = computed(() => t.value.animalWhere(target.value))
 let timer: number | undefined
 
 function newSet() {
-  const count = round.value < 2 ? 3 : 4
+  const count = levelOf(round.value) < 2 ? 3 : 4
   target.value = pick(ANIMALS.filter((a) => a !== target.value))
   choices.value = shuffle([target.value, ...shuffle(ANIMALS.filter((a) => a !== target.value)).slice(0, count - 1)])
   setId.value++

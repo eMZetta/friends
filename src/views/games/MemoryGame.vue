@@ -4,6 +4,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import AnimalIcon from '@/components/AnimalIcon.vue'
 import GameShell from '@/components/GameShell.vue'
 import RewardBurst from '@/components/RewardBurst.vue'
+import { useLevel } from '@/lib/difficulty'
 import { centerOf, useIdleHints } from '@/lib/hints'
 import { ANIMALS, useT, type AnimalKind } from '@/lib/i18n'
 import { shuffle } from '@/lib/random'
@@ -28,12 +29,13 @@ const LEVELS = [
 const t = useT()
 const prompt = computed(() => t.value.memoryPrompt)
 
+const levelOf = useLevel()
 const round = ref(0)
 const cards = ref<Card[]>([])
 const celebrating = ref(false)
 const locked = ref(false)
 
-const level = computed(() => LEVELS[Math.min(round.value, LEVELS.length - 1)]!)
+const level = computed(() => LEVELS[Math.min(levelOf(round.value), LEVELS.length - 1)]!)
 const rows = computed(() => Math.ceil(cards.value.length / level.value.cols))
 
 let timer: number | undefined
