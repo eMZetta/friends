@@ -59,6 +59,16 @@ const animalSounds: Record<Lang, Record<AnimalKind, string>> = {
   },
 }
 
+/** The animal's name without its article: "Katze", "cat". */
+function animalNoun(lang: Lang, a: AnimalKind) {
+  return animalNames[lang][a].split(' ').pop()!
+}
+
+/** First letter of the animal's name, for the letters game. */
+export function initialOf(a: AnimalKind, lang: Lang): string {
+  return animalNoun(lang, a).charAt(0).toUpperCase()
+}
+
 function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
@@ -112,6 +122,7 @@ const de = {
     shadows: 'Schatten',
     sizes: 'Groß & Klein',
     paint: 'Malen',
+    letters: 'Buchstaben',
   },
   hello: 'Hallo! Ich bin Lumi. Was wollen wir spielen?',
   pause: { title: 'Lumi macht Pause', text: 'Für heute haben wir genug gespielt. Bis morgen!' },
@@ -135,6 +146,8 @@ const de = {
   shadowsPrompt: 'Welches Tier ist der Schatten?',
   sizesPrompt: (big: boolean, count: number) =>
     `Tippe auf das ${big ? (count > 2 ? 'größte' : 'große') : count > 2 ? 'kleinste' : 'kleine'} Tier!`,
+  lettersPrompt: (a: AnimalKind) => `Mit welchem Buchstaben fängt ${animalNames.de[a]} an?`,
+  lettersIs: (a: AnimalKind) => `${initialOf(a, 'de')} wie ${animalNoun('de', a)}!`,
   paintPrompt: 'Male ein Bild! Tippe auf eine Farbe und male mit dem Finger.',
   songs: {
     ducks: 'Alle meine Entchen',
@@ -170,6 +183,9 @@ const de = {
     minutes: (n: number) => `${n} Min.`,
     played: (n: number) => `Heute gespielt: ${n} Min.`,
     resetToday: 'Zurücksetzen',
+    overview: 'Lernübersicht (seit dem Start)',
+    rounds: (n: number) => (n === 1 ? '1 Runde' : `${n} Runden`),
+    resetStats: 'Übersicht zurücksetzen',
     about: 'Lumi ist kostenlos und werbefrei. Es werden keine Daten gesammelt.',
     tips: 'Tipp: Zum Verlassen eines Spiels das Haus-Symbol gedrückt halten. Mit „Geführter Zugriff“ (Einstellungen › Bedienungshilfen) bleibt dein Kind in der App.',
   },
@@ -189,6 +205,7 @@ const en: Messages = {
     shadows: 'Shadows',
     sizes: 'Big & Small',
     paint: 'Paint',
+    letters: 'Letters',
   },
   hello: "Hi! I'm Lumi. What shall we play?",
   pause: { title: 'Lumi is taking a break', text: "We've played enough for today. See you tomorrow!" },
@@ -212,6 +229,8 @@ const en: Messages = {
   shadowsPrompt: 'Which animal is the shadow?',
   sizesPrompt: (big, count) =>
     `Tap the ${big ? (count > 2 ? 'biggest' : 'big') : count > 2 ? 'smallest' : 'small'} animal!`,
+  lettersPrompt: (a) => `Which letter does ${animalNames.en[a]} start with?`,
+  lettersIs: (a) => `${initialOf(a, 'en')} is for ${animalNoun('en', a)}!`,
   paintPrompt: 'Paint a picture! Tap a color and draw with your finger.',
   songs: {
     ducks: 'All My Little Ducklings',
@@ -247,6 +266,9 @@ const en: Messages = {
     minutes: (n) => `${n} min`,
     played: (n) => `Played today: ${n} min`,
     resetToday: 'Reset',
+    overview: 'Learning overview (so far)',
+    rounds: (n) => (n === 1 ? '1 round' : `${n} rounds`),
+    resetStats: 'Reset overview',
     about: 'Lumi is free and ad-free. No data is collected.',
     tips: 'Tip: press and hold the house to leave a game. With Guided Access (Settings › Accessibility) your child stays inside the app.',
   },

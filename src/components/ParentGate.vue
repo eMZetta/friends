@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 
 import { DIFFICULTIES } from '@/lib/difficulty'
 import { GAME_IDS, LIMIT_OPTIONS } from '@/lib/games'
 import { numberToWords, useT, type Lang } from '@/lib/i18n'
 import { hasMusic } from '@/lib/music'
 import { randInt } from '@/lib/random'
+import { useGate } from '@/stores/gate'
 import { useSettings } from '@/stores/settings'
+import { useStats } from '@/stores/stats'
 import { useUsage } from '@/stores/usage'
 
 // Apple's Kids Category requires a parental gate in front of settings and outside links.
@@ -15,18 +17,15 @@ import { useUsage } from '@/stores/usage'
 const t = useT()
 const settings = useSettings()
 const usage = useUsage()
-
-// After a few wrong answers the gate pauses, so a child can't just guess its way in.
-const MAX_TRIES = 3
-const LOCK_MS = 30_000
+const stats = useStats()
+// After a few wrong answers the gate locks (also across app restarts), so a child can't guess its way in.
+const gate = useGate()
 
 const open = ref(false)
 const unlocked = ref(false)
 const target = ref(0)
 const entry = ref('')
 const shake = ref(false)
-const tries = ref(0)
-const lockedUntil = ref(0)
 const locked = ref(false)
 let lockTimer: number | undefined
 
@@ -44,16 +43,26 @@ function startLock() {
   window.clearTimeout(lockTimer)
   lockTimer = window.setTimeout(() => {
     locked.value = false
-    tries.value = 0
     newChallenge()
-  }, Math.max(0, lockedUntil.value - Date.now()))
+  }, gate.remaining())
 }
+
+// Time spent in the parents' panel is not play time.
+watch(open, (isOpen) => (usage.paused = isOpen))
+onBeforeUnmount(() => (usage.paused = false))
+
+const overview = computed(() =>
+  GAME_IDS.filter((id) => stats.games[id]).map((id) => {
+    const s = stats.games[id]!
+    return { id, minutes: Math.round(s.seconds / 60), rounds: s.rounds, opens: s.opens }
+  }),
+)
 
 function show() {
   newChallenge()
   unlocked.value = false
   open.value = true
-  if (lockedUntil.value > Date.now()) startLock()
+  if (gate.remaining() > 0) startLock()
 }
 
 function close() {
@@ -65,15 +74,14 @@ function press(digit: number) {
   entry.value += String(digit)
   if (entry.value.length < 2) return
   if (Number(entry.value) === target.value) {
-    tries.value = 0
+    gate.succeed()
     unlocked.value = true
   } else {
     shake.value = true
-    tries.value++
-    if (tries.value >= MAX_TRIES) lockedUntil.value = Date.now() + LOCK_MS
+    const locks = gate.fail()
     window.setTimeout(() => {
       shake.value = false
-      if (tries.value >= MAX_TRIES) startLock()
+      if (locks) startLock()
       else newChallenge()
     }, 450)
   }
@@ -193,6 +201,17 @@ const languages: { id: Lang; label: string }[] = [
                 {{ t.games[g] }}
               </button>
             </div>
+          </div>
+          <div v-if="overview.length" class="games">
+            <span>{{ t.parents.overview }}</span>
+            <table class="stats">
+              <tr v-for="g in overview" :key="g.id">
+                <td>{{ t.games[g.id] }}</td>
+                <td>{{ t.parents.minutes(g.minutes) }}</td>
+                <td>{{ t.parents.rounds(g.rounds) }}</td>
+              </tr>
+            </table>
+            <button class="reset" @click="stats.reset()">{{ t.parents.resetStats }}</button>
           </div>
           <p class="about">{{ t.parents.tips }}</p>
           <p class="about">{{ t.parents.about }}</p>
@@ -334,6 +353,23 @@ p {
   background: #eef3f8;
   font-size: 15px;
   font-weight: 600;
+}
+
+.stats {
+  width: 100%;
+  margin: 8px 0;
+  font-size: 16px;
+  border-collapse: collapse;
+}
+
+.stats td {
+  padding: 4px 8px 4px 0;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.stats td:not(:first-child) {
+  text-align: right;
+  color: #6b7a8c;
 }
 
 .games {

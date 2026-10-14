@@ -31,6 +31,8 @@ export const useUsage = defineStore('usage', () => {
   const stored = load()
   const day = ref(stored.day)
   const seconds = ref(stored.seconds)
+  /** True while the parents' panel is open: that time doesn't count as play time. */
+  const paused = ref(false)
 
   const minutes = computed(() => Math.floor(seconds.value / 60))
   const limitReached = computed(() => settings.dailyLimit > 0 && seconds.value >= settings.dailyLimit * 60)
@@ -57,5 +59,5 @@ export const useUsage = defineStore('usage', () => {
     save()
   }
 
-  return { minutes, seconds, limitReached, tick, reset }
+  return { minutes, seconds, paused, limitReached, tick, reset }
 })

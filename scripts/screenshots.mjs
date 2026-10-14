@@ -17,7 +17,7 @@ const VIEWPORT = { width: 1376, height: 1032 } // 13" iPad in points; ×2 = 2752
 
 const CAPTIONS = {
   de: {
-    home: '7 Lernspiele – gratis & ohne Werbung',
+    home: '11 Lernspiele – gratis & ohne Werbung',
     shapes: 'Formen erkennen und zuordnen',
     count: 'Spielerisch zählen lernen',
     animals: 'Tiere finden und hören',
@@ -27,7 +27,7 @@ const CAPTIONS = {
     album: 'Sticker sammeln als Belohnung',
   },
   en: {
-    home: '7 learning games – free & ad-free',
+    home: '11 learning games – free & ad-free',
     shapes: 'Recognize and match shapes',
     count: 'Learn to count through play',
     animals: 'Find animals, hear their sounds',

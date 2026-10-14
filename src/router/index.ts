@@ -12,6 +12,7 @@ import XylophoneGame from '@/views/games/XylophoneGame.vue'
 import ShadowsGame from '@/views/games/ShadowsGame.vue'
 import SizesGame from '@/views/games/SizesGame.vue'
 import PaintGame from '@/views/games/PaintGame.vue'
+import LettersGame from '@/views/games/LettersGame.vue'
 
 // Hash history works without server rewrites, which keeps the Capacitor shell simple.
 const router = createRouter({
@@ -29,6 +30,7 @@ const router = createRouter({
     { path: '/play/shadows', name: 'shadows', component: ShadowsGame },
     { path: '/play/sizes', name: 'sizes', component: SizesGame },
     { path: '/play/paint', name: 'paint', component: PaintGame },
+    { path: '/play/letters', name: 'letters', component: LettersGame },
   ],
 })
 

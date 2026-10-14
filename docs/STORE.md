@@ -30,7 +30,7 @@ Gratis & werbefrei ab 2 Jahren
 <!-- /store -->
 
 <!-- store:de:promo -->
-10 liebevolle Lernspiele für Kinder von 2 bis 5: Formen, Zählen, Tiere, Memory, Musik, Malen und mehr. Komplett kostenlos – ohne Werbung, ohne Käufe.
+11 liebevolle Lernspiele für Kinder von 2 bis 5: Formen, Zählen, Tiere, Memory, Musik, Malen und mehr. Komplett kostenlos – ohne Werbung, ohne Käufe.
 <!-- /store -->
 
 <!-- store:de:keywords -->
@@ -40,7 +40,7 @@ kleinkind,kindergarten,vorschule,formen,zählen,zahlen,farben,tiere,memory,xylop
 <!-- store:de:description -->
 Lumi ist eine fröhliche Lern-App für Kinder von 2 bis 5 Jahren – komplett kostenlos, ohne Werbung, ohne In-App-Käufe und ohne Datensammlung. Einfach dem Kind das iPad geben und mitstaunen.
 
-Das kleine Glühwürmchen Lumi begleitet dein Kind durch zehn Lernspiele. Lumi erklärt alles mit Stimme, so dass auch Kinder, die noch nicht lesen können, sofort losspielen.
+Das kleine Glühwürmchen Lumi begleitet dein Kind durch elf Lernspiele. Lumi erklärt alles mit Stimme, so dass auch Kinder, die noch nicht lesen können, sofort losspielen.
 
 DIE SPIELE
 • Formen – Kreis, Stern, Herz & Co. mit dem Finger ins passende Loch ziehen
@@ -70,7 +70,7 @@ Lumi ist ein Herzensprojekt: gute Lernspiele für die Kleinsten sollten für all
 <!-- /store -->
 
 <!-- store:de:whatsnew -->
-Hallo! Lumi ist da – mit zehn Lernspielen und einem Sticker-Album zum Sammeln.
+Hallo! Lumi ist da – mit elf Lernspielen und einem Sticker-Album zum Sammeln.
 <!-- /store -->
 
 ## English
@@ -84,7 +84,7 @@ Free & ad-free for ages 2–5
 <!-- /store -->
 
 <!-- store:en:promo -->
-10 lovingly made learning games for kids aged 2 to 5: shapes, counting, animals, memory, music, painting and more. Completely free – no ads, no purchases.
+11 lovingly made learning games for kids aged 2 to 5: shapes, counting, animals, memory, music, painting and more. Completely free – no ads, no purchases.
 <!-- /store -->
 
 <!-- store:en:keywords -->
@@ -94,7 +94,7 @@ kids,preschool,kindergarten,toddler,shapes,counting,numbers,colors,animals,memor
 <!-- store:en:description -->
 Lumi is a cheerful learning app for children aged 2 to 5 – completely free, with no ads, no in-app purchases and no data collection. Just hand your child the iPad and enjoy watching them learn.
 
-Lumi, the little firefly, guides your child through ten learning games. Every instruction is spoken, so children who can't read yet can start playing right away.
+Lumi, the little firefly, guides your child through eleven learning games. Every instruction is spoken, so children who can't read yet can start playing right away.
 
 THE GAMES
 • Shapes – drag circles, stars, hearts and more into the matching hole
@@ -124,7 +124,7 @@ Lumi is a passion project: good learning games for little ones should be freely 
 <!-- /store -->
 
 <!-- store:en:whatsnew -->
-Hello! Lumi is here – with ten learning games and a sticker album to fill.
+Hello! Lumi is here – with eleven learning games and a sticker album to fill.
 <!-- /store -->
 
 ## Hinweise für Apples App-Prüfung (App Review Information → Notes)

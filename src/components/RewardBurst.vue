@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 import LumiMascot from './LumiMascot.vue'
 import StickerArt from './StickerArt.vue'
@@ -9,6 +10,7 @@ import { pick, randInt } from '@/lib/random'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
 import type { Sticker } from '@/lib/stickers'
+import { useStats } from '@/stores/stats'
 import { useStickers } from '@/stores/stickers'
 
 const props = defineProps<{ show: boolean }>()
@@ -16,6 +18,8 @@ const emit = defineEmits<{ done: [] }>()
 
 const t = useT()
 const stickers = useStickers()
+const stats = useStats()
+const route = useRoute()
 const sticker = ref<Sticker | null>(null)
 const palette = Object.values(COLORS)
 
@@ -36,6 +40,7 @@ watch(
     window.clearTimeout(timer)
     if (!show) return
     sfx.success()
+    stats.finishRound(String(route.name))
     // Every finished round earns a sticker for the album, until it is full.
     sticker.value = stickers.award()
     const praise = pick(t.value.praise)

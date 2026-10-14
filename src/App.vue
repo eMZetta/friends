@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, watch } from 'vue'
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 
 import LumiMascot from '@/components/LumiMascot.vue'
 import ParentGate from '@/components/ParentGate.vue'
@@ -9,18 +9,29 @@ import { startMusic, stopMusic } from '@/lib/music'
 import { unlockAudio } from '@/lib/sound'
 import { unlockSpeech } from '@/lib/speech'
 import { useSettings } from '@/stores/settings'
+import { useStats } from '@/stores/stats'
 import { useUsage } from '@/stores/usage'
 
 const settings = useSettings()
 const usage = useUsage()
+const stats = useStats()
+const route = useRoute()
 const t = useT()
 let unlocked = false
 let usageTimer: number | undefined
 
 // Counts play time while the app is in the foreground; stops once the daily limit is reached.
 function countUsage() {
-  if (document.visibilityState === 'visible' && !usage.limitReached) usage.tick()
+  if (document.visibilityState !== 'visible' || usage.limitReached || usage.paused) return
+  usage.tick()
+  stats.addSecond(String(route.name))
 }
+
+watch(
+  () => route.name,
+  (name) => stats.open(String(name)),
+  { immediate: true },
+)
 
 watch(
   () => usage.limitReached,

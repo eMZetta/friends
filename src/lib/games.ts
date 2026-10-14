@@ -1,4 +1,4 @@
-export const GAME_IDS = ['shapes', 'count', 'balloons', 'animals', 'memory', 'patterns', 'music', 'shadows', 'sizes', 'paint'] as const
+export const GAME_IDS = ['shapes', 'count', 'balloons', 'animals', 'memory', 'patterns', 'music', 'shadows', 'sizes', 'paint', 'letters'] as const
 
 export type GameId = (typeof GAME_IDS)[number]
 

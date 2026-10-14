@@ -31,6 +31,7 @@ const tiles = [
   { route: 'shadows', key: 'shadows', color: '#c9c3f5' },
   { route: 'sizes', key: 'sizes', color: '#c6ecc0' },
   { route: 'paint', key: 'paint', color: '#ffe3a8' },
+  { route: 'letters', key: 'letters', color: '#ffc6c6' },
 ] as const
 
 const visibleTiles = computed(() => tiles.filter((tile) => !settings.hiddenGames.includes(tile.key)))
@@ -130,6 +131,10 @@ function greet() {
             <template v-else-if="tile.key === 'sizes'">
               <div class="mini tall"><AnimalIcon kind="pig" /></div>
               <div class="mini tiny"><AnimalIcon kind="pig" /></div>
+            </template>
+            <template v-else-if="tile.key === 'letters'">
+              <div class="mini"><AnimalIcon kind="cow" /></div>
+              <div class="mini letter">K</div>
             </template>
             <template v-else-if="tile.key === 'paint'">
               <svg viewBox="0 0 100 70" class="xylo-art" aria-hidden="true">
@@ -296,7 +301,7 @@ function greet() {
 }
 
 .tiles {
-  --tile: clamp(110px, min(12vw, 26vh), 220px);
+  --tile: clamp(110px, min(12vw, 22vh), 220px);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -340,6 +345,16 @@ function greet() {
 
 .xylo-art {
   width: 80%;
+}
+
+.mini.letter {
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 30px;
+  font-weight: 800;
+  color: #ff5a5f;
 }
 
 .mini.tall {

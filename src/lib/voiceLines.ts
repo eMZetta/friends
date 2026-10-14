@@ -1,5 +1,5 @@
 import { COLOR_IDS } from './colors'
-import { ANIMALS, messages, type CountThing, type Lang, type ShapeKind, type SongId } from './i18n'
+import { ANIMALS, initialOf, messages, type CountThing, type Lang, type ShapeKind, type SongId } from './i18n'
 import { voiceKey } from './speech'
 import { STICKERS, stickerName } from './stickers'
 
@@ -30,6 +30,8 @@ export function voiceLines(lang: Lang): { key: string; text: string }[] {
     m.sizesPrompt(true, 3),
     m.sizesPrompt(false, 3),
     m.paintPrompt,
+    ...ANIMALS.flatMap((a) => [m.lettersPrompt(a), m.lettersIs(a)]),
+    ...ANIMALS.map((a) => initialOf(a, lang)),
     ...Object.values(m.songs as Record<SongId, string>),
     m.albumPrompt,
     ...STICKERS.map((s) => stickerName(s, lang)),

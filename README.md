@@ -17,6 +17,7 @@ Keine Werbung, kein Tracking, keine Logins, alles offline.
 | Schatten | Tier am Schatten erkennen, Wortschatz        |
 | Groß & Klein | Größen vergleichen (groß/klein, größte/kleinste) |
 | Malen   | Frei malen mit dem Finger, Farben wählen     |
+| Buchstaben | Anfangsbuchstaben von Tiernamen (4–5 Jahre) |
 
 Sprachen: Deutsch und Englisch (Einstellung hinter dem Eltern-Gate).
 
@@ -47,7 +48,7 @@ yarn lint
 - Spiel verlassen nur durch Gedrückthalten des Haus-Knopfs.
 - Einstellungen nur über das Eltern-Gate (ausgeschriebene Zahl eintippen). Nach 3 Fehlversuchen sperrt es 30 Sekunden.
 - Im Eltern-Bereich: Sprache, Geräusche, Sprachausgabe, Musik, Tageslimit (Lumi macht danach Pause) und Spiele ausblenden.
-  Die Spielzeit wird nur lokal auf dem Gerät gezählt.
+  Eine Lernübersicht zeigt pro Spiel Spielzeit und Runden. Alles wird nur lokal auf dem Gerät gespeichert.
 
 ## Kompatibilität
 
