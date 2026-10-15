@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 
-import LumiMascot from '@/components/LumiMascot.vue'
+import GalipMascot from '@/components/GalipMascot.vue'
 import ParentGate from '@/components/ParentGate.vue'
 import { useT } from '@/lib/i18n'
 import { startMusic, stopMusic } from '@/lib/music'
@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
 
   <Transition name="page">
     <div v-if="usage.limitReached" class="pause">
-      <div class="lumi"><LumiMascot :happy="false" /></div>
+      <div class="lumi"><GalipMascot :happy="false" /></div>
       <h1>{{ t.pause.title }}</h1>
       <p>{{ t.pause.text }}</p>
       <ParentGate />

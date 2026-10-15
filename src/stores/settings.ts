@@ -11,6 +11,7 @@ interface StoredSettings {
   sound: boolean
   voice: boolean
   music: boolean
+  soft: boolean
   hiddenGames: string[]
   dailyLimit: number
   difficulty: Difficulty
@@ -34,9 +35,11 @@ export const useSettings = defineStore('settings', () => {
   const sound = ref(stored.sound ?? true)
   const voice = ref(stored.voice ?? true)
   const music = ref(stored.music ?? true)
+  /** Gedämpfte Lautstärke, damit auch ein geräuschempfindlicher Hund entspannt bleibt. */
+  const soft = ref(stored.soft ?? true)
   /** Games the parents hid from the home screen. */
   const hiddenGames = ref<string[]>(Array.isArray(stored.hiddenGames) ? stored.hiddenGames : [])
-  /** Minutes per day before Lumi takes a break; 0 means no limit. */
+  /** Minutes per day before Galip takes a break; 0 means no limit. */
   const dailyLimit = ref(typeof stored.dailyLimit === 'number' ? stored.dailyLimit : 0)
 
   const difficulty = ref<Difficulty>(
@@ -44,7 +47,7 @@ export const useSettings = defineStore('settings', () => {
   )
 
   watch(
-    [lang, sound, voice, music, hiddenGames, dailyLimit, difficulty],
+    [lang, sound, voice, music, soft, hiddenGames, dailyLimit, difficulty],
     () => {
       try {
         const data: StoredSettings = {
@@ -52,6 +55,7 @@ export const useSettings = defineStore('settings', () => {
           sound: sound.value,
           voice: voice.value,
           music: music.value,
+          soft: soft.value,
           hiddenGames: hiddenGames.value,
           dailyLimit: dailyLimit.value,
           difficulty: difficulty.value,
@@ -74,5 +78,5 @@ export const useSettings = defineStore('settings', () => {
     }
   }
 
-  return { lang, sound, voice, music, hiddenGames, dailyLimit, difficulty, toggleGame }
+  return { lang, sound, voice, music, soft, hiddenGames, dailyLimit, difficulty, toggleGame }
 })

@@ -81,7 +81,7 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 </script>
 
 <template>
-  <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #c7ecff 0%, #c8f0b8 100%)">
+  <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #ffe3b8 0%, #bfe6c4 100%)">
     <template #status>
       <ProgressDots :total="GOAL" :done="found" color="#3bceac" />
     </template>

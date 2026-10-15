@@ -1,12 +1,20 @@
+@import '@fontsource/baloo-2/latin-600.css';
+@import '@fontsource/baloo-2/latin-800.css';
+
 :root {
-  --sky-top: #7fd3f7;
-  --sky-bottom: #d9f4ff;
-  --grass: #8bd17c;
-  --ink: #2d3a4a;
+  /* Galip lebt an einem Sommerabend: Dämmerhimmel, Glühwürmchen, weiches Licht. */
+  --dusk-top: #4b3f9e;
+  --dusk-mid: #d9709a;
+  --dusk-low: #ffb77e;
+  --meadow-far: #3f7f86;
+  --meadow-near: #2c6a5c;
+  --glow: #ffe27a;
+  --cream: #fff6e8;
+  --ink: #3a2c5e;
   --white: #ffffff;
-  --shadow: 0 6px 0 rgba(0, 0, 0, 0.12);
-  --radius: 28px;
-  --font: ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'Nunito', system-ui, sans-serif;
+  --shadow: 0 5px 0 rgba(58, 44, 94, 0.22), 0 12px 24px rgba(58, 44, 94, 0.18);
+  --radius: 30px;
+  --font: 'Baloo 2', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
 }
 
 *,
@@ -21,7 +29,7 @@ body {
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
-  background: var(--sky-top);
+  background: var(--dusk-top);
   color: var(--ink);
   font-family: var(--font);
   -webkit-user-select: none;

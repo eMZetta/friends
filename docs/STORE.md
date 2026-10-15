@@ -22,15 +22,15 @@ Die Längen werden von `scripts/check-store.mjs` geprüft (`yarn store:check`).
 ## Deutsch
 
 <!-- store:de:name -->
-Lumi – Lernspiele für Kinder
+Galip – Lernspiele für Kinder
 <!-- /store -->
 
 <!-- store:de:subtitle -->
-Gratis & werbefrei ab 2 Jahren
+Gratis & werbefrei ab 3 Jahren
 <!-- /store -->
 
 <!-- store:de:promo -->
-11 liebevolle Lernspiele für Kinder von 2 bis 5: Formen, Zählen, Tiere, Memory, Musik, Malen und mehr. Komplett kostenlos – ohne Werbung, ohne Käufe.
+11 liebevolle Lernspiele für Kinder von 3 bis 6: Formen, Zählen, Tiere, Memory, Musik, Malen und mehr. Komplett kostenlos – ohne Werbung, ohne Käufe.
 <!-- /store -->
 
 <!-- store:de:keywords -->
@@ -38,9 +38,11 @@ kleinkind,kindergarten,vorschule,formen,zählen,zahlen,farben,tiere,memory,xylop
 <!-- /store -->
 
 <!-- store:de:description -->
-Lumi ist eine fröhliche Lern-App für Kinder von 2 bis 5 Jahren – komplett kostenlos, ohne Werbung, ohne In-App-Käufe und ohne Datensammlung. Einfach dem Kind das iPad geben und mitstaunen.
+Galip ist eine fröhliche Lern-App für Kinder von 3 bis 6 Jahren – komplett kostenlos, ohne Werbung, ohne In-App-Käufe und ohne Datensammlung. Einfach dem Kind das iPad geben und mitstaunen.
 
-Das kleine Glühwürmchen Lumi begleitet dein Kind durch elf Lernspiele. Lumi erklärt alles mit Stimme, so dass auch Kinder, die noch nicht lesen können, sofort losspielen.
+Galip, der lebenslustige Border Terrier, begleitet dein Kind durch elf Lernspiele. Galip erklärt alles mit Stimme, so dass auch Kinder, die noch nicht lesen können, sofort losspielen.
+
+Galip ist ein bisschen schüchtern: Wer ruhig und sanft spielt, bekommt sein Vertrauen und seine Herzen. Wildes Tippen erschreckt ihn, dann läuft er weg und kommt erst zurück, wenn es wieder ruhig ist. So lernen Kinder ganz nebenbei, behutsam mit Hunden umzugehen.
 
 DIE SPIELE
 • Formen – Kreis, Stern, Herz & Co. mit dem Finger ins passende Loch ziehen
@@ -61,30 +63,30 @@ FÜR KLEINE HÄNDE GEMACHT
 FÜR ELTERN
 • 100 % kostenlos – keine Werbung, keine Käufe, keine Abos
 • Keine Datensammlung, kein Tracking, keine Konten, funktioniert offline
-• Einstellungen (Sprache, Geräusche, Sprachausgabe) sind durch ein Eltern-Gate geschützt
+• Altersgruppe (3–4, 4–5 oder 5–6 Jahre) und weitere Einstellungen sind durch ein Eltern-Gate geschützt
 • Ein Spiel verlässt man nur durch Gedrückthalten – Kinder landen nicht aus Versehen im Menü
 • Deutsch und Englisch
 • Läuft auch auf älteren iPads
 
-Lumi ist ein Herzensprojekt: gute Lernspiele für die Kleinsten sollten für alle Familien frei zugänglich sein. Wir freuen uns über Ideen und Rückmeldungen!
+Galip ist ein Herzensprojekt: gute Lernspiele für die Kleinsten sollten für alle Familien frei zugänglich sein. Wir freuen uns über Ideen und Rückmeldungen!
 <!-- /store -->
 
 <!-- store:de:whatsnew -->
-Hallo! Lumi ist da – mit elf Lernspielen und einem Sticker-Album zum Sammeln.
+Hallo! Galip ist da – mit elf Lernspielen und einem Sticker-Album zum Sammeln.
 <!-- /store -->
 
 ## English
 
 <!-- store:en:name -->
-Lumi – Toddler Learning Games
+Galip – Toddler Learning Games
 <!-- /store -->
 
 <!-- store:en:subtitle -->
-Free & ad-free for ages 2–5
+Free & ad-free for ages 3–6
 <!-- /store -->
 
 <!-- store:en:promo -->
-11 lovingly made learning games for kids aged 2 to 5: shapes, counting, animals, memory, music, painting and more. Completely free – no ads, no purchases.
+11 lovingly made learning games for kids aged 3 to 6: shapes, counting, animals, memory, music, painting and more. Completely free – no ads, no purchases.
 <!-- /store -->
 
 <!-- store:en:keywords -->
@@ -92,14 +94,16 @@ kids,preschool,kindergarten,toddler,shapes,counting,numbers,colors,animals,memor
 <!-- /store -->
 
 <!-- store:en:description -->
-Lumi is a cheerful learning app for children aged 2 to 5 – completely free, with no ads, no in-app purchases and no data collection. Just hand your child the iPad and enjoy watching them learn.
+Galip is a cheerful learning app for children aged 3 to 6 – completely free, with no ads, no in-app purchases and no data collection. Just hand your child the iPad and enjoy watching them learn.
 
-Lumi, the little firefly, guides your child through eleven learning games. Every instruction is spoken, so children who can't read yet can start playing right away.
+Galip, the lively Border Terrier, guides your child through eleven learning games. Every instruction is spoken, so children who can't read yet can start playing right away.
+
+Galip is a little shy: children who play calmly and gently earn his trust and his hearts. Wild tapping startles him, so he runs away and only comes back once things are quiet again. Along the way, kids learn how to treat dogs with care.
 
 THE GAMES
 • Shapes – drag circles, stars, hearts and more into the matching hole
 • Counting – tap apples, fish and flowers, count out loud and find the right number (up to 10)
-• Balloons – pop only the balloons of the color Lumi asks for
+• Balloons – pop only the balloons of the color Galip asks for
 • Animals – “Where is the cow?” Find the animals and hear what they say
 • Memory – turn over cards to find animal pairs, from 2 to 6 pairs
 • Patterns – continue rows of shapes and discover first logic
@@ -115,22 +119,22 @@ MADE FOR LITTLE HANDS
 FOR PARENTS
 • 100% free – no ads, no purchases, no subscriptions
 • No data collection, no tracking, no accounts, works offline
-• Settings (language, sounds, voice) are protected by a parental gate
+• Age group (3–4, 4–5 or 5–6) and other settings are protected by a parental gate
 • Games can only be left by pressing and holding – no accidental exits
 • English and German
 • Runs on older iPads too
 
-Lumi is a passion project: good learning games for little ones should be freely available to every family. We'd love to hear your ideas and feedback!
+Galip is a passion project: good learning games for little ones should be freely available to every family. We'd love to hear your ideas and feedback!
 <!-- /store -->
 
 <!-- store:en:whatsnew -->
-Hello! Lumi is here – with eleven learning games and a sticker album to fill.
+Hello! Galip is here – with eleven learning games and a sticker album to fill.
 <!-- /store -->
 
 ## Hinweise für Apples App-Prüfung (App Review Information → Notes)
 
 ```
-Lumi is a free learning app for children aged 2–5 (Kids category, 5 and under).
+Galip is a free learning app for children aged 3–6 (Kids category, 5 and under).
 It contains no ads, no in-app purchases, no analytics or third-party SDKs, no accounts
 and makes no network requests.
 

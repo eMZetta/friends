@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AnimalIcon from './AnimalIcon.vue'
 import CountItem from './CountItem.vue'
-import LumiMascot from './LumiMascot.vue'
+import GalipMascot from './GalipMascot.vue'
 import ShapeIcon from './ShapeIcon.vue'
 import { COLORS } from '@/lib/colors'
 import type { Sticker } from '@/lib/stickers'
@@ -14,7 +14,7 @@ defineProps<{ sticker: Sticker }>()
     <AnimalIcon v-if="sticker.type === 'animal'" :kind="sticker.kind" />
     <ShapeIcon v-else-if="sticker.type === 'shape'" :kind="sticker.kind" :color="COLORS[sticker.color]" />
     <CountItem v-else-if="sticker.type === 'thing'" :kind="sticker.kind" />
-    <LumiMascot v-else-if="sticker.type === 'lumi'" />
+    <GalipMascot v-else-if="sticker.type === 'lumi'" />
     <svg v-else viewBox="0 0 60 100" aria-hidden="true">
       <path d="M30 72 Q22 84 32 98" stroke="#6b7a8c" stroke-width="1.5" fill="none" />
       <ellipse cx="30" cy="36" rx="27" ry="33" :fill="COLORS[sticker.color]" />

@@ -2,7 +2,7 @@
 import { onBeforeUnmount, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import LumiMascot from './LumiMascot.vue'
+import GalipMascot from './GalipMascot.vue'
 import StickerArt from './StickerArt.vue'
 import { COLORS } from '@/lib/colors'
 import { useT } from '@/lib/i18n'
@@ -70,7 +70,7 @@ onBeforeUnmount(() => window.clearTimeout(timer))
       />
       <div class="row">
         <div class="lumi">
-          <LumiMascot happy />
+          <GalipMascot happy />
         </div>
         <div v-if="sticker" class="sticker">
           <StickerArt :sticker="sticker" />

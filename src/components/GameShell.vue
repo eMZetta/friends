@@ -104,7 +104,7 @@ function repeatPrompt() {
   height: 72px;
   flex: none;
   border-radius: 50%;
-  background: var(--white);
+  background: var(--cream);
   box-shadow: var(--shadow);
   display: grid;
   place-items: center;

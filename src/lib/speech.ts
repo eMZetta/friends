@@ -1,5 +1,5 @@
 import { useSettings } from '@/stores/settings'
-import { audioUrl, loadBuffer, playBuffer, type Playing } from './audio'
+import { audioUrl, loadBuffer, masterVolume, playBuffer, type Playing } from './audio'
 
 const LOCALES = { de: 'de-DE', en: 'en-US' } as const
 
@@ -50,6 +50,7 @@ function speakWithSystemVoice(parts: string[]) {
     if (voice) utterance.voice = voice
     utterance.rate = 0.9
     utterance.pitch = 1.15
+    utterance.volume = masterVolume()
     s.speak(utterance)
   }
 }

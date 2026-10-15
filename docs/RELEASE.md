@@ -17,7 +17,7 @@ Der iOS-Build läuft auf einem Mac in der Cloud bei **Codemagic** (Gratis-Kontin
 - Danach unter developer.apple.com → Identifiers die App-ID registrieren.
 
 ### 3. App in App Store Connect anlegen
-- appstoreconnect.apple.com → Apps → „+“ → Neue App: Plattform iOS, Name „Lumi“
+- appstoreconnect.apple.com → Apps → „+“ → Neue App: Plattform iOS, Name „Galip“
   (Name muss im Store frei sein!), Sprache Deutsch, Bundle-ID wählen.
 - Die numerische **Apple-ID** der App (App-Informationen) in `codemagic.yaml` bei
   `APP_STORE_APPLE_ID` eintragen.
@@ -45,7 +45,7 @@ git push origin v1.0.0
 ```
 
 Oder in Codemagic manuell „Start new build“. Nach ~10 min ist der Build in TestFlight.
-Auf dem iPad die App **TestFlight** installieren und Lumi testen.
+Auf dem iPad die App **TestFlight** installieren und Galip testen.
 
 ## Vor der Einreichung (App Store Connect)
 

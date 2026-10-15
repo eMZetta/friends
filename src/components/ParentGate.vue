@@ -146,6 +146,13 @@ const languages: { id: Lang; label: string }[] = [
             </div>
           </div>
           <div class="row">
+            <span>{{ t.parents.soft }}</span>
+            <div class="toggle">
+              <button :class="{ active: settings.soft }" @click="settings.soft = true">{{ t.parents.on }}</button>
+              <button :class="{ active: !settings.soft }" @click="settings.soft = false">{{ t.parents.off }}</button>
+            </div>
+          </div>
+          <div class="row">
             <span>{{ t.parents.voice }}</span>
             <div class="toggle">
               <button :class="{ active: settings.voice }" @click="settings.voice = true">{{ t.parents.on }}</button>

@@ -155,7 +155,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #8fd6ff 0%, #e2f7ff 100%)">
+  <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #8a7be0 0%, #f4a3b4 55%, #ffd9a8 100%)">
     <template #status>
       <ProgressDots :total="GOAL" :done="popped" :color="COLORS[target]" />
     </template>

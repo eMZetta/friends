@@ -39,6 +39,6 @@ export function stickerName(sticker: Sticker, lang: Lang): string {
     case 'balloon':
       return m.balloon
     case 'lumi':
-      return 'Lumi!'
+      return 'Galip!'
   }
 }

@@ -10,6 +10,8 @@ export function voiceLines(lang: Lang): { key: string; text: string }[] {
   const m = messages[lang]
   const texts = [
     m.hello,
+    m.shy,
+    m.friend,
     ...Object.values(m.games),
     ...m.praise,
     m.newSticker,

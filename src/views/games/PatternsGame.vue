@@ -106,7 +106,7 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 </script>
 
 <template>
-  <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #d4f4ff 0%, #fff4d6 100%)">
+  <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #ffe0cc 0%, #fff4d6 100%)">
     <div class="track">
       <div v-for="(tok, i) in sequence" :key="`${round}-${i}`" class="cell" :style="{ animationDelay: `${i * 70}ms` }">
         <ShapeIcon :kind="tok.kind" :color="tok.color" />

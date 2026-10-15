@@ -1,5 +1,5 @@
 import { useSettings } from '@/stores/settings'
-import { audioContext, audioNames, audioUrl, loadBuffer, playBuffer, readyBuffer } from './audio'
+import { audioContext, audioNames, audioUrl, loadBuffer, masterVolume, playBuffer, readyBuffer } from './audio'
 
 // Effects play a recorded sample from src/assets/audio/sfx/ when one exists and
 // are synthesized otherwise, so the app always has sound.
@@ -39,7 +39,8 @@ interface ToneOptions {
 function tone(freq: number, start: number, duration: number, opts: ToneOptions = {}) {
   const ac = audio()
   if (!ac) return
-  const { type = 'sine', volume = 0.25, slideTo } = opts
+  const { type = 'sine', slideTo } = opts
+  const volume = (opts.volume ?? 0.25) * masterVolume()
   const t = ac.currentTime + start
   const osc = ac.createOscillator()
   const gain = ac.createGain()

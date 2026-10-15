@@ -1,6 +1,6 @@
 # Audio: Sprachaufnahmen, Soundeffekte, Musik
 
-Lumi funktioniert ohne eine einzige Audiodatei: Sprache kommt dann von der Systemstimme,
+Galip funktioniert ohne eine einzige Audiodatei: Sprache kommt dann von der Systemstimme,
 Effekte und Xylophon werden synthetisch erzeugt. Jede Datei, die du hinzufügst, ersetzt
 automatisch das jeweilige Provisorium – Schritt für Schritt, ohne Code-Änderung.
 

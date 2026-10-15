@@ -6,6 +6,10 @@
 //   music/loop.mp3           optional background music
 // Anything missing falls back to synthesized sound or the system voice.
 
+import { useSettings } from '@/stores/settings'
+
+const SOFT_VOLUME = 0.55
+
 let ctx: AudioContext | null = null
 
 export function audioContext(): AudioContext | null {
@@ -70,6 +74,11 @@ export interface Playing {
   gain: GainNode
 }
 
+/** Faktor für alle Lautstärken: im sanften Modus leiser, damit nichts erschreckt. */
+export function masterVolume(): number {
+  return useSettings().soft ? SOFT_VOLUME : 1
+}
+
 export function playBuffer(buffer: AudioBuffer, { volume = 1, loop = false } = {}): Playing | null {
   const ac = audioContext()
   if (!ac) return null
@@ -77,7 +86,7 @@ export function playBuffer(buffer: AudioBuffer, { volume = 1, loop = false } = {
   const gain = ac.createGain()
   source.buffer = buffer
   source.loop = loop
-  gain.gain.value = volume
+  gain.gain.value = volume * masterVolume()
   source.connect(gain)
   gain.connect(ac.destination)
   source.start()

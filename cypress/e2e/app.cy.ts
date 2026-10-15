@@ -2,7 +2,7 @@
 
 const GAMES = ['shapes', 'count', 'balloons', 'animals', 'memory', 'patterns', 'music', 'shadows', 'sizes', 'paint', 'letters']
 
-describe('Lumi', () => {
+describe('Galip', () => {
   beforeEach(() => {
     cy.visit('/', {
       onBeforeLoad(win) {
