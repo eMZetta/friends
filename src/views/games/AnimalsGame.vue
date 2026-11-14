@@ -113,11 +113,11 @@ onBeforeUnmount(() => window.clearTimeout(timer))
   align-items: center;
   align-content: center;
   justify-content: center;
-  gap: 4vmin;
+  gap: calc(4 * var(--u));
 }
 
 .animal {
-  --size: min(24vmin, 220px);
+  --size: min(calc(24 * var(--u)), 220px);
   display: grid;
   place-items: center;
   width: var(--size);

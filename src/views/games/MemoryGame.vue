@@ -10,6 +10,7 @@ import { ANIMALS, useT, type AnimalKind } from '@/lib/i18n'
 import { shuffle } from '@/lib/random'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
+import { usePortrait } from '@/lib/viewport'
 
 interface Card {
   id: number
@@ -35,8 +36,11 @@ const cards = ref<Card[]>([])
 const celebrating = ref(false)
 const locked = ref(false)
 
+const portrait = usePortrait()
 const level = computed(() => LEVELS[Math.min(levelOf(round.value), LEVELS.length - 1)]!)
-const rows = computed(() => Math.ceil(cards.value.length / level.value.cols))
+// Upright: narrow columns, many rows (2 wide, or 3 wide for the biggest board).
+const cols = computed(() => (portrait.value ? (level.value.pairs > 4 ? 3 : 2) : level.value.cols))
+const rows = computed(() => Math.ceil(cards.value.length / cols.value))
 
 let timer: number | undefined
 
@@ -108,7 +112,7 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 <template>
   <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #e3d9ff 0%, #ffe3f1 100%)">
     <div class="table">
-      <div class="grid" :style="{ '--cols': level.cols, '--rows': rows }">
+      <div class="grid" :style="{ '--cols': cols, '--rows': rows }">
         <button
           v-for="c in cards"
           :key="`${round}-${c.id}`"
@@ -145,10 +149,11 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 }
 
 .grid {
-  --card: min(calc((100vw - 140px) / var(--cols)), calc((100vh - 160px) / var(--rows)), 190px);
+  --gap: 18px;
+  --card: min(calc((100vw - 60px - (var(--cols) - 1) * var(--gap)) / var(--cols)), calc((100vh - 150px - (var(--rows) - 1) * var(--gap)) / var(--rows)), 190px);
   display: grid;
   grid-template-columns: repeat(var(--cols), var(--card));
-  gap: 18px;
+  gap: var(--gap);
 }
 
 .card {

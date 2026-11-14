@@ -160,6 +160,29 @@ function repeatPrompt() {
   }
 }
 
+/* Kleine Geräte (iPhone): kompaktere Leiste, mehr Platz fürs Spiel. */
+@media (max-height: 560px), (max-width: 599px) {
+  .shell {
+    padding-top: max(10px, env(safe-area-inset-top));
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .bar {
+    min-height: 56px;
+    gap: 10px;
+  }
+
+  .round-btn {
+    width: 56px;
+    height: 56px;
+  }
+
+  .round-btn svg {
+    width: 34px;
+    height: 34px;
+  }
+}
+
 .stage {
   position: relative;
   flex: 1;

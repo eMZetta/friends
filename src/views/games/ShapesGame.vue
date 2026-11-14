@@ -213,7 +213,7 @@ onMounted(() => {
 }
 
 .slot {
-  --size: min(24vmin, 220px);
+  --size: min(calc(24 * var(--u)), 220px);
   width: var(--size);
   height: var(--size);
   position: relative;

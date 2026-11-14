@@ -124,8 +124,8 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 }
 
 .picture {
-  width: min(34vmin, 300px);
-  height: min(34vmin, 300px);
+  width: min(calc(34 * var(--u)), 300px);
+  height: min(calc(34 * var(--u)), 300px);
   padding: 12px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
@@ -136,16 +136,16 @@ onBeforeUnmount(() => window.clearTimeout(timer))
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 3vmin;
+  gap: calc(3 * var(--u));
 }
 
 .letter {
-  width: min(20vmin, 180px);
-  height: min(20vmin, 180px);
+  width: min(calc(20 * var(--u)), 180px);
+  height: min(calc(20 * var(--u)), 180px);
   border-radius: 28%;
   background: #fff;
   box-shadow: 0 8px 0 rgba(0, 0, 0, 0.12);
-  font-size: min(12vmin, 110px);
+  font-size: min(calc(12 * var(--u)), 110px);
   font-weight: 800;
   color: #ff5a5f;
   animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;

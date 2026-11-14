@@ -140,11 +140,11 @@ onMounted(newRound)
   flex-wrap: wrap;
   align-content: center;
   justify-content: center;
-  gap: 2vmin 3vmin;
+  gap: calc(2 * var(--u)) calc(3 * var(--u));
 }
 
 .item {
-  --size: min(17vmin, 160px);
+  --size: min(calc(17 * var(--u)), 160px);
   display: grid;
   place-items: center;
   width: var(--size);
@@ -181,11 +181,11 @@ onMounted(newRound)
   right: 0;
   display: flex;
   justify-content: center;
-  gap: 5vmin;
+  gap: calc(5 * var(--u));
 }
 
 .answer {
-  --size: min(20vmin, 150px);
+  --size: min(calc(20 * var(--u)), 150px);
   width: var(--size);
   height: var(--size);
   border-radius: 32px;

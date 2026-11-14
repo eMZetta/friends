@@ -269,6 +269,7 @@ function greet() {
         <h1 class="logo">
           <span v-for="(ch, i) in 'Galip'" :key="i" :style="{ animationDelay: `${i * 0.15}s` }">{{ ch }}</span>
         </h1>
+        <div class="badges">
         <p class="age" data-testid="age-badge">
           <svg viewBox="0 0 40 40" aria-hidden="true">
             <ellipse cx="20" cy="26" rx="9" ry="7.5" />
@@ -290,8 +291,9 @@ function greet() {
             <path d="M16 28 C4 19 2 12 2 8.5 A7 7 0 0 1 16 6 A7 7 0 0 1 30 8.5 C30 12 28 19 16 28 Z" />
           </svg>
         </p>
+        </div>
       </div>
-      <ParentGate />
+      <div class="parent-slot"><ParentGate /></div>
     </header>
 
     <section class="content">
@@ -433,14 +435,16 @@ function greet() {
 
 <style scoped>
 .home {
+  --pad: 24px;
+  --album: 104px;
   position: absolute;
   inset: 0;
   overflow: hidden;
   background: linear-gradient(180deg, var(--dusk-top) 0%, var(--dusk-mid) 58%, var(--dusk-low) 82%);
   display: flex;
   flex-direction: column;
-  padding: max(16px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
-    max(16px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  padding: max(16px, env(safe-area-inset-top)) max(var(--pad), env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(var(--pad), env(safe-area-inset-left));
 }
 
 /* Tiefstehende Sonne hinter den Hügeln */
@@ -530,12 +534,26 @@ function greet() {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 12px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 18px;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  min-width: 0;
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.parent-slot {
+  flex: none;
 }
 
 .age {
@@ -547,8 +565,9 @@ function greet() {
   border-radius: 999px;
   background: var(--cream);
   color: var(--ink);
-  font-size: clamp(16px, 2.6vmin, 24px);
+  font-size: clamp(14px, 2.6vmin, 24px);
   font-weight: 800;
+  white-space: nowrap;
   box-shadow: 0 4px 0 rgba(58, 44, 94, 0.18);
 }
 
@@ -569,7 +588,7 @@ function greet() {
 }
 
 .trust svg {
-  width: clamp(18px, 3vmin, 28px);
+  width: clamp(16px, 3vmin, 28px);
   fill: none;
   stroke: #d9709a;
   stroke-width: 2.5;
@@ -607,9 +626,10 @@ function greet() {
 
 .logo {
   margin: 0;
-  font-size: clamp(48px, 9vmin, 92px);
+  font-size: clamp(40px, 9vmin, 92px);
   font-weight: 800;
   line-height: 1;
+  white-space: nowrap;
   letter-spacing: 1px;
   color: var(--cream);
   text-shadow:
@@ -633,8 +653,10 @@ function greet() {
 }
 
 .content {
+  --galip: clamp(96px, 28vmin, 340px);
   position: relative;
   flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -644,7 +666,7 @@ function greet() {
 .galip {
   position: relative;
   z-index: 4;
-  width: clamp(170px, 32vmin, 340px);
+  width: var(--galip);
   flex: none;
   transition: transform 1.3s cubic-bezier(0.45, 0.05, 0.3, 1);
   filter: drop-shadow(0 0 20px rgba(255, 246, 232, 0.6));
@@ -656,12 +678,14 @@ function greet() {
 }
 
 .tiles {
+  --gap: 24px;
+  --cols: 5;
   --tile: clamp(110px, min(12vw, 22vh), 220px);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 24px;
-  max-width: calc(var(--tile) * 5 + 24px * 4);
+  gap: var(--gap);
+  max-width: calc(var(--tile) * var(--cols) + var(--gap) * (var(--cols) - 1));
 }
 
 .tile {
@@ -679,13 +703,13 @@ function greet() {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 10px 8px;
+  padding: calc(var(--tile) * 0.1) calc(var(--tile) * 0.06) calc(var(--tile) * 0.05);
   transform: translateY(var(--lift)) rotate(var(--tilt));
   transition: transform 0.15s;
 }
 
 .tile:nth-child(even) {
-  --lift: 14px;
+  --lift: calc(var(--tile) * 0.08);
 }
 
 .tile:nth-child(3n) {
@@ -740,7 +764,7 @@ function greet() {
   place-items: center;
   border-radius: 10px;
   background: #fff;
-  font-size: 30px;
+  font-size: calc(var(--tile) * 0.17);
   font-weight: 800;
   color: #ff5a5f;
 }
@@ -782,7 +806,7 @@ function greet() {
   border: 3px dashed #c98a5a;
   border-radius: 10px;
   font-weight: 800;
-  font-size: 22px;
+  font-size: calc(var(--tile) * 0.12);
   color: #c98a5a;
 }
 
@@ -795,17 +819,17 @@ function greet() {
   position: absolute;
   right: -4px;
   bottom: -6px;
-  width: 26px;
-  height: 26px;
+  width: calc(var(--tile) * 0.15);
+  height: calc(var(--tile) * 0.15);
   border-radius: 50%;
   background: #fff;
-  font-size: 16px;
+  font-size: calc(var(--tile) * 0.09);
   display: grid;
   place-items: center;
 }
 
 .label {
-  font-size: clamp(20px, 3.2vmin, 32px);
+  font-size: clamp(13px, calc(var(--tile) * 0.15), 32px);
   font-weight: 800;
   line-height: 1.1;
   color: var(--ink);
@@ -815,9 +839,9 @@ function greet() {
   position: absolute;
   right: max(24px, env(safe-area-inset-right));
   bottom: max(20px, env(safe-area-inset-bottom));
-  width: 104px;
-  height: 104px;
-  padding: 12px;
+  width: var(--album);
+  height: var(--album);
+  padding: calc(var(--album) * 0.115);
   border-radius: 50%;
   background: var(--cream);
   box-shadow:
@@ -855,9 +879,110 @@ function greet() {
   place-items: center;
 }
 
+/* Hochformat: Galip über den Kacheln. */
 @media (max-aspect-ratio: 1/1) {
+  .home {
+    --album: 80px;
+  }
+
   .content {
     flex-direction: column;
+    gap: 2vh;
+  }
+
+  .galip {
+    width: clamp(96px, min(24vh, 52vw), 300px);
+  }
+
+
+  /* Letzte Reihe linksbündig: rechts unten bleibt Platz für das Album. */
+  .tiles {
+    justify-content: flex-start;
+    width: calc(var(--tile) * var(--cols) + var(--gap) * (var(--cols) - 1));
+    --gap: clamp(10px, 2.4vw, 24px);
+    --cols: 3;
+    --tile: clamp(
+      84px,
+      min(calc((100vw - 2 * var(--pad) - 2 * var(--gap)) / 3), calc((100vh - 400px) / 4 - var(--gap))),
+      220px
+    );
+  }
+}
+
+/* Schmales Hochformat: Logo und „Für Eltern" teilen sich die erste Zeile, die Abzeichen kommen darunter. */
+@media (max-aspect-ratio: 1/1) and (max-width: 599px) {
+  .top {
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: contents;
+  }
+
+  .logo {
+    order: 1;
+  }
+
+  .parent-slot {
+    order: 2;
+  }
+
+  .badges {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
+/* Breites Hochformat (iPad): vier Spalten, drei Reihen. */
+@media (max-aspect-ratio: 1/1) and (min-width: 600px) {
+  .home {
+    --album: 104px;
+  }
+
+  .tiles {
+    --cols: 4;
+    --tile: clamp(
+      110px,
+      min(calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4), calc((100vh - 420px) / 3 - var(--gap))),
+      230px
+    );
+  }
+}
+
+/* Flaches Querformat (iPhone): zwei Reihen à sechs Kacheln, kleinerer Kopf. */
+@media (min-aspect-ratio: 1/1) and (max-height: 560px) {
+  .home {
+    --pad: 16px;
+    --album: 64px;
+  }
+
+  .content {
+    gap: 2vw;
+  }
+
+  .tiles {
+    --gap: clamp(8px, 1.6vw, 16px);
+    --cols: 6;
+    --tile: clamp(
+      60px,
+      min(
+        calc((100vw - 2 * var(--pad) - var(--galip) - 2vw - 5 * var(--gap)) / 6),
+        calc((100vh - 120px) / 2 - var(--gap))
+      ),
+      170px
+    );
+  }
+
+  .logo {
+    font-size: 36px;
+  }
+}
+
+@media (max-height: 560px) {
+  .album-btn .badge {
+    min-width: 26px;
+    height: 26px;
+    font-size: 15px;
   }
 }
 </style>

@@ -142,7 +142,7 @@ onBeforeUnmount(() => window.clearTimeout(timer))
   transform: translateX(-50%);
   width: min(96%, 1100px);
   min-height: 34%;
-  padding: 3vmin;
+  padding: calc(3 * var(--u));
   background: #fff;
   border-radius: 40px;
   box-shadow: 0 10px 0 rgba(0, 0, 0, 0.08);
@@ -150,14 +150,21 @@ onBeforeUnmount(() => window.clearTimeout(timer))
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 1.6vmin;
+  gap: calc(1.6 * var(--u));
 }
 
 .cell {
-  --size: min(8.5vw, 13vmin, 110px);
+  --size: min(8.5vw, calc(13 * var(--u)), 110px);
   width: var(--size);
   height: var(--size);
   animation: pop-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+/* Hochformat: Felder an der Breite ausrichten, die Reihe darf umbrechen. */
+@media (max-aspect-ratio: 1/1) {
+  .cell {
+    --size: min(14vw, 110px);
+  }
 }
 
 .slot {
@@ -187,11 +194,12 @@ onBeforeUnmount(() => window.clearTimeout(timer))
   right: 0;
   display: flex;
   justify-content: center;
-  gap: 6vmin;
+  flex-wrap: wrap;
+  gap: calc(4 * var(--u));
 }
 
 .option {
-  --size: min(20vmin, 170px);
+  --size: min(calc(20 * var(--u)), 170px);
   display: grid;
   place-items: center;
   width: var(--size);

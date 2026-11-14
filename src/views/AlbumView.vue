@@ -89,15 +89,48 @@ onMounted(() => {
 }
 
 .grid {
-  --cell: min(calc((100vw - 160px) / 5), calc((100vh - 180px) / 4), 160px);
+  --cols: 5;
+  --rows: 4;
+  --gap: 16px;
+  --pad: 24px;
+  --cell: min(
+    calc((100vw - 2 * var(--pad) - (var(--cols) - 1) * var(--gap) - 80px) / var(--cols)),
+    calc((100vh - 2 * var(--pad) - (var(--rows) - 1) * var(--gap) - 130px) / var(--rows)),
+    160px
+  );
   display: grid;
-  grid-template-columns: repeat(5, var(--cell));
-  gap: 16px;
-  padding: 24px;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  gap: var(--gap);
+  padding: var(--pad);
   background: #fffaf0;
   border-radius: 32px;
   border: 4px dashed #e8c48a;
   box-shadow: 0 10px 0 rgba(0, 0, 0, 0.08);
+}
+
+/* Hochformat: 4 × 5 statt 5 × 4. */
+@media (max-aspect-ratio: 1/1) {
+  .grid {
+    --cols: 4;
+    --rows: 5;
+  }
+}
+
+/* Flaches Querformat (iPhone): 7 × 3, kleinere Abstände. */
+@media (min-aspect-ratio: 1/1) and (max-height: 560px) {
+  .grid {
+    --cols: 7;
+    --rows: 3;
+    --gap: 8px;
+    --pad: 12px;
+  }
+}
+
+@media (max-width: 599px) {
+  .grid {
+    --gap: 10px;
+    --pad: 14px;
+  }
 }
 
 .slot {
@@ -124,7 +157,7 @@ onMounted(() => {
   height: calc(var(--cell) * 0.92);
   padding: calc(var(--cell) * 0.09);
   background: #fff;
-  border-radius: 22px;
+  border-radius: calc(var(--cell) * 0.14);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transform: rotate(var(--tilt));
 }

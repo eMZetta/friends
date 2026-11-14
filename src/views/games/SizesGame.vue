@@ -122,13 +122,13 @@ onBeforeUnmount(() => window.clearTimeout(timer))
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 4vmin;
-  padding-bottom: 8vmin;
+  gap: calc(4 * var(--u));
+  padding-bottom: calc(8 * var(--u));
 }
 
 .animal {
-  width: calc(min(40vmin, 340px) * var(--s));
-  height: calc(min(40vmin, 340px) * var(--s));
+  width: calc(min(calc(40 * var(--u)), 340px) * var(--s));
+  height: calc(min(calc(40 * var(--u)), 340px) * var(--s));
   flex: none;
   animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
   transition:

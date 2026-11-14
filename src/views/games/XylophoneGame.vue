@@ -304,11 +304,11 @@ onBeforeUnmount(() => {
   right: 0;
   display: flex;
   justify-content: center;
-  gap: 5vmin;
+  gap: calc(5 * var(--u));
 }
 
 .song {
-  --size: min(15vmin, 120px);
+  --size: min(calc(15 * var(--u)), 120px);
   display: grid;
   place-items: center;
   width: var(--size);

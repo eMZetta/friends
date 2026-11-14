@@ -117,8 +117,8 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 }
 
 .shadow {
-  width: min(34vmin, 300px);
-  height: min(34vmin, 300px);
+  width: min(calc(34 * var(--u)), 300px);
+  height: min(calc(34 * var(--u)), 300px);
   padding: 12px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
@@ -140,11 +140,11 @@ onBeforeUnmount(() => window.clearTimeout(timer))
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 3vmin;
+  gap: calc(3 * var(--u));
 }
 
 .animal {
-  --size: min(20vmin, 180px);
+  --size: min(calc(20 * var(--u)), 180px);
   display: grid;
   place-items: center;
   width: var(--size);

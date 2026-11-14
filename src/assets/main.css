@@ -14,7 +14,15 @@
   --white: #ffffff;
   --shadow: 0 5px 0 rgba(58, 44, 94, 0.22), 0 12px 24px rgba(58, 44, 94, 0.18);
   --radius: 30px;
+  /* Spiel-Einheit: wie 1vmin, im Hochformat größer, weil dort die Breite der engste Wert ist. */
+  --u: 1vmin;
   --font: 'Baloo 2', ui-rounded, 'SF Pro Rounded', system-ui, sans-serif;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  :root {
+    --u: 1.25vmin;
+  }
 }
 
 *,
