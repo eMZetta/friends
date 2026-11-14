@@ -33,7 +33,7 @@ Der iOS-Build läuft auf einem Mac in der Cloud bei **Codemagic** (Gratis-Kontin
 ### 6. Codemagic
 - codemagic.io mit GitHub anmelden, Repository hinzufügen („Capacitor App“ → `codemagic.yaml` wird erkannt).
 - Team settings → Integrations → Developer Portal → API-Schlüssel hinzufügen,
-  Name exakt: **Lumi App Store Connect**.
+  Name exakt wie in `codemagic.yaml` (`app_store_connect:`, aktuell **ChaschJasse**).
 - Team settings → Code signing identities → iOS certificates → „Generate certificate“
   (Typ Apple Distribution), dann iOS provisioning profiles → „Fetch profiles“.
 

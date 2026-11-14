@@ -10,8 +10,8 @@ workflows:
     instance_type: mac_mini_m2
 
     integrations:
-      # Name of the App Store Connect API key added under Codemagic → Team → Integrations.
-      app_store_connect: Lumi App Store Connect
+      # Name of the App Store Connect API key in Codemagic → Settings → Integrations → Developer Portal.
+      app_store_connect: ChaschJasse
 
     environment:
       ios_signing:
