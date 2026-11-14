@@ -134,12 +134,15 @@ withDefaults(
       <path d="M116 68 L122 54 L132 62 L140 50 L150 60 L158 54 L162 68 Q176 80 166 96 L120 104 Q106 84 116 68 Z" fill="#c98f55" />
       <ellipse cx="142" cy="86" rx="32" ry="29" fill="#c98f55" />
       <path d="M114 70 L122 54 L132 62 L140 50 L150 60 L158 54 L164 70 Q150 66 140 76 Q124 74 114 70 Z" fill="#5a4a3e" />
+      <path d="M150 104 L146 112 L154 112 L152 122 L160 118 L162 128 L169 121 L174 130 L178 120 L186 124 L184 112 L190 108 L184 100 Z" fill="#a27c50" />
       <ellipse cx="168" cy="97" rx="22" ry="15" fill="#b99266" />
       <path d="M152 106 L156 120 L162 112 L168 122 L174 112 L182 118 L184 104 Z" fill="#b99266" />
+      <path d="M156 94 L148 96 M158 100 L148 105 M184 112 L190 118" stroke="#8a6a45" stroke-width="2.6" stroke-linecap="round" fill="none" />
       <path d="M170 108 Q174 128 181 110 Z" fill="#ff7a9a" />
       <ellipse cx="187" cy="91" rx="7.5" ry="6.5" fill="#241c1a" />
       <ellipse cx="185" cy="89" rx="2.6" ry="1.6" fill="#fff" opacity="0.55" />
       <path d="M158 106 Q170 112 184 103" stroke="#241c1a" stroke-width="3" fill="none" stroke-linecap="round" />
+      <path d="M140 72 L138 80 L144 79 L143 88 L150 85 L153 92 L158 86 L165 88 L162 80 L168 74 Q152 66 140 72 Z" fill="#5a4a3e" opacity="0.5" />
       <circle cx="154" cy="78" r="6.5" fill="#2a1d17" />
       <circle cx="156.5" cy="75.5" r="2.4" fill="#fff" />
       <path v-if="shy" d="M144 70 Q154 68 165 58" stroke="#e0b47a" stroke-width="4" fill="none" stroke-linecap="round" />
@@ -159,6 +162,8 @@ withDefaults(
       <ellipse class="paw paw-a" cx="72" cy="186" rx="16" ry="8" fill="#c98f55" />
       <ellipse class="paw paw-b" cx="128" cy="186" rx="16" ry="8" fill="#c98f55" />
       <circle v-for="([x, y], i) in beadsBack" :key="i" :cx="x" :cy="y" r="5.6" :fill="bead(i)" stroke="#8a5a2b" stroke-width="1.2" />
+      <path d="M54 98 L34 106 L50 111 L38 121 L56 121 L52 134 L68 127 L78 116 Z" fill="#a27c50" />
+      <path d="M146 98 L166 106 L150 111 L162 121 L144 121 L148 134 L132 127 L122 116 Z" fill="#a27c50" />
       <path
         d="M46 88 L40 78 L50 80 L48 68 L58 74 L62 58 L72 68 L82 54 L92 64 L104 52 L112 64 L124 54 L130 68 L140 58 L142 74 L152 68 L150 80 L160 78 L154 90
            Q158 122 126 134 Q100 142 74 134 Q42 122 46 88 Z"
