@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import AnimalIcon from '@/components/AnimalIcon.vue'
 import CountItem from '@/components/CountItem.vue'
 import GalipMascot from '@/components/GalipMascot.vue'
+import { ACTION_MS, IDLE_ACTIONS, TRICKS, type GalipAction } from '@/components/galipActions'
 import ParentGate from '@/components/ParentGate.vue'
 import ShapeIcon from '@/components/ShapeIcon.vue'
 import { COLORS } from '@/lib/colors'
@@ -73,6 +74,7 @@ const pose = ref<'front' | 'side' | 'back'>('front')
 const flip = ref(false)
 const walking = ref(false)
 const shy = ref(false)
+const action = ref<GalipAction | null>(null)
 const hearts = ref<{ id: number; x: number; y: number }[]>([])
 const SPEED = 0.17 // Pixel pro Millisekunde: ruhiges Tempo
 const FLEE_SPEED = 0.32
@@ -121,6 +123,22 @@ function walkTo(x: number, y: number, noseToTarget = false, speed = SPEED): numb
   return ms
 }
 
+const pick = <T,>(list: readonly T[]) => list[Math.floor(Math.random() * list.length)]!
+
+/** Führt eine Aktion aus und liefert false, wenn dazwischen etwas Neues begonnen hat. */
+async function doAction(token: number, a: GalipAction, ms = ACTION_MS[a]) {
+  action.value = a
+  await wait(ms)
+  if (token !== run) return false
+  action.value = null
+  return true
+}
+
+/** Ein Nickerchen: hinlegen, schlafen, aufwachen und gähnen. */
+async function nap(token: number) {
+  return (await doAction(token, 'lie')) && (await doAction(token, 'sleep')) && (await doAction(token, 'yawn'))
+}
+
 function stand() {
   walking.value = false
   pose.value = 'front'
@@ -137,7 +155,24 @@ async function explore(token: number) {
     const ms = walkTo(m + Math.random() * (window.innerWidth - 2 * m), m + Math.random() * (window.innerHeight - 2 * m))
     await wait(ms + 150)
     if (token !== run) return
+
+    // Angekommen: erst schnüffeln oder zum Spielen auffordern (er steht noch seitlich), dann hinsetzen.
+    walking.value = false
+    const r = Math.random()
+    if (pose.value === 'side' && r < 0.55) {
+      if (!(await doAction(token, r < 0.4 ? 'sniff' : 'bow'))) return
+    }
     stand()
+    await wait(500)
+    if (token !== run) return
+
+    // Im Sitzen macht er meistens noch etwas, manchmal ein Nickerchen.
+    const s = Math.random()
+    if (s < 0.12) {
+      if (!(await nap(token))) return
+    } else if (s < 0.75) {
+      if (!(await doAction(token, pick(IDLE_ACTIONS)))) return
+    }
   }
 }
 
@@ -161,6 +196,7 @@ async function startle(x: number, y: number) {
   const token = ++run
   fetching = true
   ball.value = null
+  action.value = null
   happy.value = false
   shy.value = true
   say(t.value.shy)
@@ -217,6 +253,8 @@ async function throwBall(e: PointerEvent) {
   if (fetching || !galipEl.value || (e.target as HTMLElement).closest('button')) return
   fetching = true
   const token = ++run
+  action.value = null
+  walking.value = false
   sfx.tap()
   ball.value = { x: e.clientX, y: e.clientY }
 
@@ -244,11 +282,20 @@ onBeforeUnmount(() => {
   timers.forEach((id) => window.clearTimeout(id))
 })
 
-function greet() {
+// Antippen: Galip freut sich und macht ein Kunststück (hüpfen, drehen, Männchen, schütteln, Kopf schief).
+async function greet() {
+  if (fetching || shy.value) return
   sfx.tap()
   say(t.value.hello)
+  const token = ++run
+  fetching = true
   happy.value = true
-  window.setTimeout(() => (happy.value = false), 1600)
+  const trick = pick(TRICKS)
+  const ok = await doAction(token, trick)
+  if (!ok) return
+  happy.value = false
+  fetching = false
+  void explore(token)
 }
 </script>
 
@@ -305,7 +352,7 @@ function greet() {
         :style="{ transform: `translate(${dog.dx}px, ${dog.dy}px)`, transitionDuration: `${dog.ms}ms` }"
         @click="greet"
       >
-        <GalipMascot :happy="happy" :shy="shy" :pose="pose" :flip="flip" :walking="walking" />
+        <GalipMascot :happy="happy" :shy="shy" :pose="pose" :flip="flip" :walking="walking" :action="action" />
       </button>
 
       <nav class="tiles">
