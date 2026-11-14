@@ -19,7 +19,7 @@ workflows:
         bundle_identifier: ch.lumikids.app # keep in sync with capacitor.config.ts
       vars:
         # Numeric "Apple ID" of the app, shown in App Store Connect → App Information.
-        APP_STORE_APPLE_ID: 0000000000
+        APP_STORE_APPLE_ID: 6834624516
         XCODE_PROJECT: ios/App/App.xcodeproj
         XCODE_SCHEME: App
       node: latest
