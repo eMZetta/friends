@@ -56,11 +56,15 @@ withDefaults(
       </g>
 
       <!-- Schnauze: dunkle Fischotter-Schnauze -->
+      <path d="M58 112 L52 119 L61 120 L58 129 L67 128 L68 137 L77 133 L82 144 L90 137 L96 147 L100 140 L104 147 L110 137 L118 144 L123 133 L132 137 L133 128 L142 129 L139 120 L148 119 L142 112 Q100 142 58 112 Z" fill="#a27c50" />
       <ellipse cx="100" cy="114" rx="28" ry="20" fill="#b99266" />
       <path d="M74 124 L78 137 L88 128 L96 139 L104 130 L112 139 L122 128 L126 124 Q100 138 74 124 Z" fill="#b99266" />
+      <path d="M78 106 L68 108 M79 113 L67 117 M80 120 L70 126 M122 106 L132 108 M121 113 L133 117 M120 120 L130 126" stroke="#8a6a45" stroke-width="3" stroke-linecap="round" />
       <ellipse cx="100" cy="100" rx="15" ry="11" fill="#241c1a" />
       <ellipse cx="95" cy="97" rx="4.5" ry="2.5" fill="#fff" opacity="0.55" />
 
+      <path d="M62 80 L58 90 L66 88 L64 98 L73 94 L78 100 L82 92 L90 94 L86 84 L92 76 Q76 72 62 80 Z" fill="#5a4a3e" opacity="0.5" />
+      <path d="M138 80 L142 90 L134 88 L136 98 L127 94 L122 100 L118 92 L110 94 L114 84 L108 76 Q124 72 138 80 Z" fill="#5a4a3e" opacity="0.5" />
       <!-- Augen und Brauen -->
       <g v-if="!happy">
         <circle cx="76" cy="84" r="9" fill="#2a1d17" />
