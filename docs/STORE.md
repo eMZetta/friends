@@ -17,7 +17,7 @@ Die Längen werden von `scripts/check-store.mjs` geprüft (`yarn store:check`).
 | Support-URL              | `https://<deine-domain>/support.html`                    |
 | Marketing-URL (optional) | `https://<deine-domain>/`                                |
 | Copyright                | `2026 [NAME]`                                            |
-| Geräte                   | iPad (ab iPadOS 15)                                      |
+| Geräte                   | iPad und iPhone (ab iOS/iPadOS 15), Fokus iPad          |
 
 ## Deutsch
 
