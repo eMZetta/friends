@@ -148,5 +148,11 @@ To leave a game, press and hold the house button (top left) for about one second
 
 ## Screenshots
 
-`yarn screenshots` erzeugt 8 Screenshots pro Sprache in `store/screenshots/<lang>/`
-im Format 2752 × 2064 (iPad 13", Querformat) – direkt hochladbar in App Store Connect.
+`yarn screenshots` erzeugt 8 Screenshots pro Sprache und Gerät in `store/screenshots/<gerät>/<lang>/` –
+direkt hochladbar in App Store Connect:
+
+- `ipad/`: 2752 × 2064 (iPad 13", Querformat)
+- `iphone/`: 1320 × 2868 (iPhone 6,9", Hochformat)
+
+Nur ein Gerät: `yarn screenshots iphone` bzw. `yarn screenshots ipad`. Ohne installierten Playwright-Chromium
+mit `PW_CHANNEL=chrome` das vorhandene Chrome nutzen.

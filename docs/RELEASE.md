@@ -53,7 +53,7 @@ Auf dem iPad die App **TestFlight** installieren und Galip testen.
 - **App-Datenschutz:** „Keine Daten erfasst“ (stimmt: kein Tracking, keine Server, keine Konten).
 - **Datenschutzerklärung-URL:** Pflicht, auch ohne Datenerfassung (z. B. GitHub Pages).
 - **Preis:** Kostenlos. Keine In-App-Käufe.
-- **Screenshots:** iPad 13" (Pflicht) und iPhone 6,9" (2064×2752 bzw. Querformat 2752×2064), mind. 3 Stück.
+- **Screenshots:** iPad 13" (Pflicht) und iPhone 6,9" (1320×2868 Hochformat), mind. 3 Stück.
 - **Altersfreigabe-Fragebogen:** überall „Keine“ → 4+.
 - **Test-Hinweis für Apple:** Eltern-Gate erklären („Für Eltern“ → ausgeschriebene Zahl eintippen).
 
