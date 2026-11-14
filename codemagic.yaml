@@ -61,3 +61,53 @@ workflows:
       app_store_connect:
         auth: integration
         submit_to_testflight: true
+
+  android-play:
+    name: Android → Play Console (AAB)
+    max_build_duration: 60
+    instance_type: linux_x2
+
+    environment:
+      # Keystore unter Codemagic → Team → Code signing identities → Android keystores hochladen,
+      # Referenzname exakt: galip_keystore
+      android_signing:
+        - galip_keystore
+      # Optional für automatischen Upload (nach dem ersten manuellen Upload in der Play Console):
+      # groups:
+      #   - google_play   # enthält GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+      node: latest
+      java: 21
+
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: 'v*'
+
+    scripts:
+      - name: Install dependencies
+        script: yarn install --frozen-lockfile
+      - name: Lint, type-check and test
+        script: |
+          yarn lint
+          yarn type-check
+          yarn vitest run
+      - name: Build web app and copy it into the Android project
+        script: |
+          yarn build
+          npx cap sync android
+      - name: Build signed AAB
+        script: |
+          export BUILD_NUMBER=$(($(date +%s) / 60 - 29000000))
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease
+
+    artifacts:
+      - android/app/build/outputs/bundle/release/*.aab
+
+    # publishing:
+    #   google_play:
+    #     credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+    #     track: internal
+    #     submit_as_draft: true

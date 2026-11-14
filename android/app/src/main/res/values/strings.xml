@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Galip</string>
+    <string name="title_activity_main">Galip</string>
+    <string name="package_name">ch.lumikids.app</string>
+    <string name="custom_url_scheme">ch.lumikids.app</string>
+</resources>

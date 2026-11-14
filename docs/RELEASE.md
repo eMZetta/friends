@@ -66,3 +66,16 @@ Auf dem iPad die App **TestFlight** installieren und Galip testen.
 | `yarn voice:lines` | Liste aller Sprachaufnahmen erzeugen (siehe `AUDIO.md`) |
 
 Der Ordner `ios/` gehört ins Git-Repository, er ist das native Xcode-Projekt.
+
+## Android (Google Play)
+
+Der Workflow `android-play` in `codemagic.yaml` baut ein signiertes `.aab` bei jedem Tag `v*`.
+
+1. **Upload-Keystore** liegt lokal in `~/galip-keys/` (nicht im Git!). In Codemagic unter
+   Team settings → Code signing identities → Android keystores hochladen, Referenzname
+   **galip_keystore**, Key-Alias `galip-upload`, Passwörter siehe `zugangsdaten.txt`.
+2. Play Console → App erstellen („Galip“, Paketname `ch.lumikids.app`), Play App Signing aktivieren.
+3. Den **ersten** Upload macht man von Hand: Codemagic-Artefakt `.aab` herunterladen →
+   Testen → Interner Test → Release erstellen. Danach optional Service-Account-Automatik
+   (Block `publishing` in der YAML).
+4. Versionscode kommt aus der Zeit (`BUILD_NUMBER`), steigt also automatisch.
