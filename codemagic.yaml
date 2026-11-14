@@ -23,7 +23,7 @@ workflows:
         XCODE_PROJECT: ios/App/App.xcodeproj
         XCODE_SCHEME: App
         CYPRESS_INSTALL_BINARY: 0
-      node: latest
+      node: 24
       xcode: latest
 
     triggering:
@@ -78,7 +78,7 @@ workflows:
       #   - google_play   # enthält GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
       vars:
         CYPRESS_INSTALL_BINARY: 0
-      node: latest
+      node: 24
       java: 21
 
     triggering:
