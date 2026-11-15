@@ -2,21 +2,58 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 import AnimalIcon from '@/components/AnimalIcon.vue'
+import CountItem from '@/components/CountItem.vue'
 import GameShell from '@/components/GameShell.vue'
 import RewardBurst from '@/components/RewardBurst.vue'
+import ShapeIcon from '@/components/ShapeIcon.vue'
+import { COLOR_IDS, COLORS, type ColorId } from '@/lib/colors'
 import { useLevel } from '@/lib/difficulty'
 import { centerOf, useIdleHints } from '@/lib/hints'
-import { ANIMALS, useT, type AnimalKind } from '@/lib/i18n'
-import { shuffle } from '@/lib/random'
+import { ANIMALS, useT, type AnimalKind, type CountThing, type ShapeKind } from '@/lib/i18n'
+import { pick, shuffle } from '@/lib/random'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
 import { usePortrait } from '@/lib/viewport'
 
+// What is on the cards changes from round to round: animals, shapes, colours or fruit and flowers.
+type Face =
+  | { set: 'animal'; kind: AnimalKind }
+  | { set: 'shape'; kind: ShapeKind; color: ColorId }
+  | { set: 'color'; color: ColorId }
+  | { set: 'thing'; kind: CountThing }
+
 interface Card {
   id: number
-  animal: AnimalKind
+  face: Face
+  key: string
   open: boolean
   matched: boolean
+}
+
+const SHAPE_KINDS: ShapeKind[] = ['circle', 'square', 'triangle', 'star', 'heart', 'hexagon']
+const THINGS: CountThing[] = ['apple', 'star', 'fish', 'flower']
+
+function keyOf(face: Face) {
+  return face.set === 'color' ? `color:${face.color}` : `${face.set}:${face.kind}`
+}
+
+/** A fresh set of distinct faces for the round, one per pair. */
+function facesFor(set: Face['set'], pairs: number): Face[] {
+  const colors = shuffle(COLOR_IDS)
+  if (set === 'shape')
+    return shuffle(SHAPE_KINDS)
+      .slice(0, pairs)
+      .map((kind, i) => ({ set, kind, color: colors[i]! }))
+  if (set === 'color') return colors.slice(0, pairs).map((color) => ({ set, color }))
+  if (set === 'thing') return shuffle(THINGS).slice(0, pairs).map((kind) => ({ set, kind }))
+  return shuffle(ANIMALS).slice(0, pairs).map((kind) => ({ set, kind }))
+}
+
+function spoken(face: Face): string {
+  if (face.set === 'animal') return t.value.animalName(face.kind)
+  if (face.set === 'shape') return t.value.shapes[face.kind]
+  if (face.set === 'color') return t.value.thatIs(face.color)
+  return t.value.thing[face.kind]
 }
 
 // Pairs per round, and the grid they are laid out in (landscape-friendly).
@@ -33,6 +70,7 @@ const prompt = computed(() => t.value.memoryPrompt)
 const levelOf = useLevel()
 const round = ref(0)
 const cards = ref<Card[]>([])
+let lastSet: Face['set'] | null = null
 const celebrating = ref(false)
 const locked = ref(false)
 
@@ -45,10 +83,17 @@ const rows = computed(() => Math.ceil(cards.value.length / cols.value))
 let timer: number | undefined
 
 function newRound() {
-  const animals = shuffle(ANIMALS).slice(0, level.value.pairs)
-  cards.value = shuffle([...animals, ...animals]).map((animal, id) => ({
+  const pairs = level.value.pairs
+  const sets = (['animal', 'shape', 'color', 'thing'] as const).filter(
+    (s) => s !== lastSet && (s !== 'thing' || pairs <= THINGS.length),
+  )
+  const set = pick(sets)
+  lastSet = set
+  const faces = facesFor(set, pairs)
+  cards.value = shuffle([...faces, ...faces]).map((face, id) => ({
     id,
-    animal,
+    face,
+    key: keyOf(face),
     open: false,
     matched: false,
   }))
@@ -64,10 +109,10 @@ function flip(card: Card) {
   if (open.length < 2) return
 
   const [a, b] = open as [Card, Card]
-  if (a.animal === b.animal) {
+  if (a.key === b.key) {
     a.matched = b.matched = true
     sfx.snap()
-    say(t.value.animalName(a.animal))
+    say(spoken(a.face))
     if (cards.value.every((c) => c.matched)) {
       timer = window.setTimeout(() => (celebrating.value = true), 900)
     }
@@ -95,7 +140,7 @@ const { hint } = useIdleHints({
     // With one card open, point at its partner; otherwise at any closed card.
     const open = cards.value.find((c) => c.open && !c.matched)
     const card = open
-      ? cards.value.find((c) => c.animal === open.animal && c !== open)
+      ? cards.value.find((c) => c.key === open.key && c !== open)
       : cards.value.find((c) => !c.open && !c.matched)
     return card ? centerOf(document.querySelector(`[data-card="${card.id}"]`)) : null
   },
@@ -129,7 +174,10 @@ onBeforeUnmount(() => window.clearTimeout(timer))
               </svg>
             </div>
             <div class="face front">
-              <AnimalIcon :kind="c.animal" />
+              <AnimalIcon v-if="c.face.set === 'animal'" :kind="c.face.kind" />
+              <ShapeIcon v-else-if="c.face.set === 'shape'" :kind="c.face.kind" :color="COLORS[c.face.color]" />
+              <ShapeIcon v-else-if="c.face.set === 'color'" kind="circle" :color="COLORS[c.face.color]" />
+              <CountItem v-else :kind="c.face.kind" />
             </div>
           </div>
         </button>

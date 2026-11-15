@@ -110,6 +110,16 @@ const deColorAdj: Record<ColorId, string> = {
   pink: 'pinken',
 }
 
+// "Finde den Kreis!" – the German article changes with the noun.
+const deShapeAccusative: Record<ShapeKind, string> = {
+  circle: 'den Kreis',
+  square: 'das Quadrat',
+  triangle: 'das Dreieck',
+  star: 'den Stern',
+  heart: 'das Herz',
+  hexagon: 'das Sechseck',
+}
+
 const de = {
   games: {
     shapes: 'Formen',
@@ -139,6 +149,7 @@ const de = {
   animalSays: (a: AnimalKind) => `${capitalize(animalNames.de[a])} macht ${animalSounds.de[a]}!`,
   animalIs: (a: AnimalKind) => `${animalSounds.de[a]}! Das ist ${animalNames.de[a]}.`,
   animalName: (a: AnimalKind) => `${capitalize(animalNames.de[a])}!`,
+  animalWho: (a: AnimalKind) => `Wer sagt ${animalSounds.de[a]}?`,
   memoryPrompt: 'Finde die Paare!',
   albumPrompt: 'Deine Sticker-Sammlung!',
   newSticker: 'Ein neuer Sticker!',
@@ -147,10 +158,17 @@ const de = {
   patternsPrompt: 'Was kommt als Nächstes?',
   musicPrompt: 'Mach Musik! Tippe auf die bunten Stäbe.',
   shadowsPrompt: 'Welches Tier ist der Schatten?',
+  shadowsMatchPrompt: 'Welcher Schatten passt?',
+  sizesOrderPrompt: 'Tippe die Tiere der Größe nach an: erst das kleinste!',
   sizesPrompt: (big: boolean, count: number) =>
     `Tippe auf das ${big ? (count > 2 ? 'größte' : 'große') : count > 2 ? 'kleinste' : 'kleine'} Tier!`,
   lettersPrompt: (a: AnimalKind) => `Mit welchem Buchstaben fängt ${animalNames.de[a]} an?`,
   lettersIs: (a: AnimalKind) => `${initialOf(a, 'de')} wie ${animalNoun('de', a)}!`,
+  lettersFind: (letter: string) => `Welches Tier fängt mit ${letter} an?`,
+  countGive: (n: number, thing: CountThing) => `Gib mir ${n} ${things.de[thing]}!`,
+  shapesFind: (k: ShapeKind) => `Finde ${deShapeAccusative[k]}!`,
+  shapesOdd: 'Welche Form ist anders?',
+  balloonsOrder: 'Lass die Ballone der Reihe nach platzen: 1, 2, 3!',
   paintPrompt: 'Male ein Bild! Tippe auf eine Farbe und male mit dem Finger.',
   songs: {
     ducks: 'Alle meine Entchen',
@@ -198,6 +216,15 @@ const de = {
 
 type Messages = typeof de
 
+const shapeNamesEn: Record<ShapeKind, string> = {
+  circle: 'circle',
+  square: 'square',
+  triangle: 'triangle',
+  star: 'star',
+  heart: 'heart',
+  hexagon: 'hexagon',
+}
+
 const en: Messages = {
   games: {
     shapes: 'Shapes',
@@ -227,6 +254,7 @@ const en: Messages = {
   animalSays: (a) => `${capitalize(animalNames.en[a])} says ${animalSounds.en[a]}!`,
   animalIs: (a) => `${capitalize(animalSounds.en[a])}! That is ${animalNames.en[a]}.`,
   animalName: (a) => `${capitalize(animalNames.en[a])}!`,
+  animalWho: (a) => `Who says ${animalSounds.en[a]}?`,
   memoryPrompt: 'Find the pairs!',
   albumPrompt: 'Your sticker collection!',
   newSticker: 'A new sticker!',
@@ -235,10 +263,17 @@ const en: Messages = {
   patternsPrompt: 'What comes next?',
   musicPrompt: 'Make music! Tap the colorful bars.',
   shadowsPrompt: 'Which animal is the shadow?',
+  shadowsMatchPrompt: 'Which shadow fits?',
+  sizesOrderPrompt: 'Tap the animals in order of size: the smallest first!',
   sizesPrompt: (big, count) =>
     `Tap the ${big ? (count > 2 ? 'biggest' : 'big') : count > 2 ? 'smallest' : 'small'} animal!`,
   lettersPrompt: (a) => `Which letter does ${animalNames.en[a]} start with?`,
   lettersIs: (a) => `${initialOf(a, 'en')} is for ${animalNoun('en', a)}!`,
+  lettersFind: (letter) => `Which animal starts with ${letter}?`,
+  countGive: (n, thing) => `Give me ${n} ${things.en[thing]}!`,
+  shapesFind: (k) => `Find the ${shapeNamesEn[k]}!`,
+  shapesOdd: 'Which shape is different?',
+  balloonsOrder: 'Pop the balloons in order: 1, 2, 3!',
   paintPrompt: 'Paint a picture! Tap a color and draw with your finger.',
   songs: {
     ducks: 'All My Little Ducklings',

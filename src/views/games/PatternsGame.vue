@@ -30,7 +30,8 @@ const prompt = computed(() => t.value.patternsPrompt)
 
 const levelOf = useLevel()
 const round = ref(0)
-const sequence = ref<Token[]>([])
+// The row of shapes; the gap (null) is either at the end or somewhere in the middle.
+const cells = ref<(Token | null)[]>([])
 const answer = ref<Token | null>(null)
 const options = ref<Token[]>([])
 const wrong = ref<Token[]>([])
@@ -50,19 +51,30 @@ function newRound() {
   const letters = [...new Set(unit)]
 
   // Kinds and colours both differ, so the pattern can be read either way.
+  // Sometimes only the colour changes (same shape) or only the shape (same colour).
+  const vary = pick(['both', 'both', 'color', 'shape'] as const)
   const kinds = shuffle(KINDS)
   const colors = shuffle(COLOR_IDS)
-  const tokens = letters.map((_, i) => ({ kind: kinds[i]!, color: COLORS[colors[i]!] }))
+  const tokenAt = (i: number) => ({
+    kind: kinds[vary === 'color' ? 0 : i]!,
+    color: COLORS[colors[vary === 'shape' ? 0 : i]!],
+  })
+  const tokens = letters.map((_, i) => tokenAt(i))
   const byLetter = (letter: string) => tokens[letters.indexOf(letter)]!
 
   // Show at least two full repetitions, then stop somewhere inside the next one.
   let shown = unit.length * 2 + randInt(0, unit.length - 1)
   while (shown > MAX_SHOWN) shown -= unit.length
-  sequence.value = Array.from({ length: shown }, (_, i) => byLetter(unit[i % unit.length]!))
-  answer.value = byLetter(unit[shown % unit.length]!)
+  const total = shown + 1
+  const full = Array.from({ length: total }, (_, i) => byLetter(unit[i % unit.length]!))
+  // Later rounds sometimes leave the gap in the middle, with shapes still following it.
+  const middle = levelOf(round.value) >= 1 && Math.random() < 0.4 && total >= unit.length + 2
+  const gap = middle ? randInt(unit.length, total - 2) : total - 1
+  answer.value = full[gap]!
+  cells.value = full.map((tok, i) => (i === gap ? null : tok))
 
   // Always offer three choices; add an outsider when the pattern only has two tokens.
-  const extra = { kind: kinds[letters.length]!, color: COLORS[colors[letters.length]!] }
+  const extra = tokenAt(letters.length)
   options.value = shuffle(tokens.length >= 3 ? tokens : [...tokens, extra])
   wrong.value = []
   solved.value = false
@@ -108,13 +120,15 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 <template>
   <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #ffe0cc 0%, #fff4d6 100%)">
     <div class="track">
-      <div v-for="(tok, i) in sequence" :key="`${round}-${i}`" class="cell" :style="{ animationDelay: `${i * 70}ms` }">
-        <ShapeIcon :kind="tok.kind" :color="tok.color" />
-      </div>
-      <div class="cell slot" :class="{ solved }">
-        <ShapeIcon v-if="solved && answer" :kind="answer.kind" :color="answer.color" />
-        <span v-else class="question">?</span>
-      </div>
+      <template v-for="(tok, i) in cells" :key="`${round}-${i}`">
+        <div v-if="tok" class="cell" :style="{ animationDelay: `${i * 70}ms` }">
+          <ShapeIcon :kind="tok.kind" :color="tok.color" />
+        </div>
+        <div v-else class="cell slot" :class="{ solved }">
+          <ShapeIcon v-if="solved && answer" :kind="answer.kind" :color="answer.color" />
+          <span v-else class="question">?</span>
+        </div>
+      </template>
     </div>
 
     <div class="options">

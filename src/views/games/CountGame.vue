@@ -24,7 +24,13 @@ const tapped = ref<number[]>([])
 const wrong = ref<number[]>([])
 const celebrating = ref(false)
 
-const prompt = computed(() => t.value.countPrompt(thing.value))
+// Two kinds of round: "How many do you see?" and "Give me 4 apples!" (tap exactly that many).
+const mode = ref<'count' | 'give'>('count')
+const pile = ref(0)
+const shown = computed(() => (mode.value === 'give' ? pile.value : count.value))
+const prompt = computed(() =>
+  mode.value === 'give' ? t.value.countGive(count.value, thing.value) : t.value.countPrompt(thing.value),
+)
 
 function maxForRound(r: number) {
   if (r < 3) return 3
@@ -39,6 +45,8 @@ function newRound() {
   if (n === count.value) n = (n % max) + 1
   count.value = n
   thing.value = pick(THINGS.filter((x) => x !== thing.value))
+  mode.value = levelOf(round.value) >= 1 && Math.random() < 0.45 ? 'give' : 'count'
+  pile.value = Math.min(n + randInt(2, 4), 12)
   tapped.value = []
   wrong.value = []
 
@@ -55,6 +63,12 @@ function tapItem(index: number) {
   tapped.value.push(index)
   sfx.tap()
   say(String(tapped.value.length))
+  if (mode.value === 'give' && tapped.value.length === count.value) {
+    window.setTimeout(() => {
+      sfx.snap()
+      celebrating.value = true
+    }, 800)
+  }
 }
 
 function tapNumber(i: number) {
@@ -98,7 +112,7 @@ onMounted(newRound)
   <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #fff3c4 0%, #d8f3dc 100%)">
     <div class="field">
       <button
-        v-for="i in count"
+        v-for="i in shown"
         :key="`${round}-${i}`"
         class="item"
         :data-item="i"
@@ -111,7 +125,11 @@ onMounted(newRound)
       </button>
     </div>
 
-    <div class="answers">
+    <div v-if="mode === 'give'" class="basket" aria-hidden="true">
+      <CountItem v-for="i in tapped.length" :key="i" :kind="thing" class="in-basket" />
+    </div>
+
+    <div v-else class="answers">
       <button
         v-for="n in options"
         :key="`${round}-${n}`"
@@ -171,6 +189,30 @@ onMounted(newRound)
   font-weight: 800;
   display: grid;
   place-items: center;
+  animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.basket {
+  position: absolute;
+  bottom: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(1 * var(--u));
+  min-width: min(60%, 520px);
+  height: calc(16 * var(--u));
+  max-height: 150px;
+  padding: 0 calc(3 * var(--u));
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 6px dashed #c9955c;
+}
+
+.in-basket {
+  width: calc(10 * var(--u));
+  max-width: 90px;
   animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 

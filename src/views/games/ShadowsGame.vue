@@ -15,7 +15,9 @@ import { say } from '@/lib/speech'
 const GOAL = 3
 
 const t = useT()
-const prompt = computed(() => t.value.shadowsPrompt)
+// Two ways to play: see the shadow and pick the animal, or see the animal and pick its shadow.
+const mode = ref<'guess' | 'match'>('guess')
+const prompt = computed(() => (mode.value === 'match' ? t.value.shadowsMatchPrompt : t.value.shadowsPrompt))
 
 const levelOf = useLevel()
 const round = ref(0)
@@ -33,6 +35,7 @@ function newSet() {
   const count = levelOf(round.value) < 2 ? 3 : 4
   target.value = pick(ANIMALS.filter((a) => a !== target.value))
   choices.value = shuffle([target.value, ...shuffle(ANIMALS.filter((a) => a !== target.value)).slice(0, count - 1)])
+  if (Math.random() < 0.7) mode.value = mode.value === 'guess' ? 'match' : 'guess'
   setId.value++
   revealed.value = false
   say(prompt.value)
@@ -83,7 +86,7 @@ onBeforeUnmount(() => window.clearTimeout(timer))
     </template>
 
     <div class="stage-col">
-      <div :key="`shadow-${setId}`" class="shadow" :class="{ revealed }">
+      <div :key="`shadow-${setId}`" class="shadow" :class="{ revealed: revealed || mode === 'match' }">
         <AnimalIcon :kind="target" />
       </div>
 
@@ -93,7 +96,12 @@ onBeforeUnmount(() => window.clearTimeout(timer))
           :key="`${setId}-${a}`"
           class="animal"
           :data-animal="a"
-          :class="{ dim: revealed && a !== target, cheer: revealed && a === target, wobble: wobbling === a }"
+          :class="{
+            dim: revealed && a !== target,
+            cheer: revealed && a === target,
+            wobble: wobbling === a,
+            dark: mode === 'match' && !revealed,
+          }"
           :style="{ animationDelay: `${i * 80}ms` }"
           @click="tap(a)"
         >
@@ -134,6 +142,14 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 
 .shadow.revealed :deep(svg) {
   filter: none;
+}
+
+.animal.dark :deep(svg) {
+  filter: brightness(0) opacity(0.7);
+}
+
+.animal :deep(svg) {
+  transition: filter 0.5s;
 }
 
 .choices {

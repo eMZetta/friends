@@ -28,21 +28,56 @@ const done = ref(false)
 const wobbling = ref<string | null>(null)
 const celebrating = ref(false)
 
-const prompt = computed(() => t.value.lettersPrompt(animal.value))
+// Two ways round: see the animal and pick its first letter, or see the letter and pick an animal.
+const mode = ref<'letter' | 'animal'>('letter')
+const animalChoices = ref<AnimalKind[]>([])
+const prompt = computed(() =>
+  mode.value === 'animal' ? t.value.lettersFind(answer.value) : t.value.lettersPrompt(animal.value),
+)
 const answer = computed(() => initialOf(animal.value, settings.lang))
 
 let timer: number | undefined
 
 function newSet() {
   animal.value = pick(ANIMALS.filter((a) => a !== animal.value))
+  if (Math.random() < 0.7) mode.value = mode.value === 'letter' ? 'animal' : 'letter'
+  const count = levelOf(round.value) < 2 ? 3 : 4
+  if (mode.value === 'animal') {
+    // Only one of the animals starts with the letter, so there is a single right answer.
+    const letter = initialOf(animal.value, settings.lang)
+    const others = ANIMALS.filter((a) => initialOf(a, settings.lang) !== letter)
+    animalChoices.value = shuffle([animal.value, ...shuffle(others).slice(0, count - 1)])
+    setId.value++
+    done.value = false
+    say(prompt.value)
+    return
+  }
   // Other letters come from the other animals; each letter appears only once.
   const correct = initialOf(animal.value, settings.lang)
   const others = [...new Set(ANIMALS.map((a) => initialOf(a, settings.lang)))].filter((l) => l !== correct)
-  const count = levelOf(round.value) < 2 ? 3 : 4
   letters.value = shuffle([correct, ...shuffle(others).slice(0, count - 1)])
   setId.value++
   done.value = false
   say(prompt.value)
+}
+
+function tapAnimal(a: AnimalKind) {
+  if (done.value || celebrating.value) return
+  if (a === animal.value) {
+    done.value = true
+    found.value++
+    sfx.snap()
+    say(t.value.lettersIs(a))
+    timer = window.setTimeout(() => {
+      if (found.value >= GOAL) celebrating.value = true
+      else newSet()
+    }, 2200)
+  } else {
+    wobbling.value = a
+    sfx.tap()
+    say(t.value.animalIs(a))
+    window.setTimeout(() => (wobbling.value = null), 500)
+  }
 }
 
 function tap(letter: string) {
@@ -76,7 +111,10 @@ const { hint } = useIdleHints({
   game: 'letters',
   prompt: () => prompt.value,
   paused: () => celebrating.value || done.value,
-  target: () => centerOf(document.querySelector(`[data-letter="${answer.value}"]`)),
+  target: () =>
+    centerOf(
+      document.querySelector(mode.value === 'animal' ? `[data-animal="${animal.value}"]` : `[data-letter="${answer.value}"]`),
+    ),
 })
 
 onMounted(newSet)
@@ -90,11 +128,26 @@ onBeforeUnmount(() => window.clearTimeout(timer))
     </template>
 
     <div class="stage-col">
-      <div :key="`animal-${setId}`" class="picture">
+      <div v-if="mode === 'animal'" :key="`letter-${setId}`" class="picture big-letter">{{ answer }}</div>
+      <div v-else :key="`animal-${setId}`" class="picture">
         <AnimalIcon :kind="animal" />
       </div>
 
-      <div class="choices">
+      <div v-if="mode === 'animal'" class="choices">
+        <button
+          v-for="(a, i) in animalChoices"
+          :key="`${setId}-${a}`"
+          class="pick"
+          :data-animal="a"
+          :class="{ cheer: done && a === animal, dim: done && a !== animal, wobble: wobbling === a }"
+          :style="{ animationDelay: `${i * 80}ms` }"
+          @click="tapAnimal(a)"
+        >
+          <AnimalIcon :kind="a" />
+        </button>
+      </div>
+
+      <div v-else class="choices">
         <button
           v-for="(l, i) in letters"
           :key="`${setId}-${l}`"
@@ -137,6 +190,46 @@ onBeforeUnmount(() => window.clearTimeout(timer))
   flex-wrap: wrap;
   justify-content: center;
   gap: calc(3 * var(--u));
+}
+
+.big-letter {
+  display: grid;
+  place-items: center;
+  font-size: min(calc(22 * var(--u)), 200px);
+  font-weight: 800;
+  color: #ff5a5f;
+}
+
+.pick {
+  display: grid;
+  place-items: center;
+  width: min(calc(20 * var(--u)), 180px);
+  height: min(calc(20 * var(--u)), 180px);
+  padding: calc(min(calc(20 * var(--u)), 180px) * 0.08);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.12);
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.pick:active {
+  transform: scale(0.94);
+}
+
+.pick.cheer {
+  animation: cheer 0.45s ease-in-out infinite alternate;
+  background: #fff;
+}
+
+.pick.dim {
+  opacity: 0.35;
+}
+
+.pick.wobble {
+  animation: wobble 0.45s;
 }
 
 .letter {

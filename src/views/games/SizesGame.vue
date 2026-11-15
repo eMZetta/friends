@@ -31,17 +31,25 @@ const done = ref(false)
 const wobbling = ref<AnimalKind | null>(null)
 const celebrating = ref(false)
 
-const prompt = computed(() => t.value.sizesPrompt(big.value, items.value.length))
+// Besides "tap the biggest / smallest" there is a sorting round: tap all animals from smallest to biggest.
+const mode = ref<'pick' | 'order'>('pick')
+const order = ref<AnimalKind[]>([])
+const prompt = computed(() =>
+  mode.value === 'order' ? t.value.sizesOrderPrompt : t.value.sizesPrompt(big.value, items.value.length),
+)
+const sorted = computed(() => [...items.value].sort((a, b) => a.scale - b.scale))
 const answer = computed(() => {
-  const sorted = [...items.value].sort((a, b) => a.scale - b.scale)
-  return (big.value ? sorted[sorted.length - 1] : sorted[0])?.animal ?? null
+  if (mode.value === 'order') return sorted.value[order.value.length]?.animal ?? null
+  return (big.value ? sorted.value[sorted.value.length - 1] : sorted.value[0])?.animal ?? null
 })
 
 let timer: number | undefined
 
 function newSet() {
   // Two clearly different sizes at first; later three, asking for the biggest or smallest.
-  const scales = levelOf(round.value) < 3 ? [0.55, 1] : [0.45, 0.72, 1]
+  mode.value = levelOf(round.value) >= 1 && Math.random() < 0.4 ? 'order' : 'pick'
+  const scales = levelOf(round.value) < 3 && mode.value === 'pick' ? [0.55, 1] : [0.45, 0.72, 1]
+  order.value = []
   const animals = shuffle(ANIMALS).slice(0, scales.length)
   items.value = shuffle(scales.map((scale, i) => ({ animal: animals[i]!, scale })))
   big.value = pick([true, false])
@@ -53,10 +61,14 @@ function newSet() {
 function tap(item: Item) {
   if (done.value || celebrating.value) return
   if (item.animal === answer.value) {
-    done.value = true
-    found.value++
     sfx.snap()
     say(t.value.animalName(item.animal))
+    if (mode.value === 'order') {
+      order.value.push(item.animal)
+      if (order.value.length < items.value.length) return
+    }
+    done.value = true
+    found.value++
     timer = window.setTimeout(() => {
       if (found.value >= GOAL) celebrating.value = true
       else newSet()
@@ -100,14 +112,16 @@ onBeforeUnmount(() => window.clearTimeout(timer))
         class="animal"
         :data-animal="item.animal"
         :class="{
-          cheer: done && item.animal === answer,
-          dim: done && item.animal !== answer,
+          cheer: done && (mode === 'order' || item.animal === answer),
+          dim: done && mode === 'pick' && item.animal !== answer,
+          ordered: order.includes(item.animal),
           wobble: wobbling === item.animal,
         }"
         :style="{ '--s': item.scale, animationDelay: `${i * 80}ms` }"
         @click="tap(item)"
       >
         <AnimalIcon :kind="item.animal" />
+        <span v-if="mode === 'order' && order.includes(item.animal)" class="badge">{{ order.indexOf(item.animal) + 1 }}</span>
       </button>
     </div>
 
@@ -127,6 +141,7 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 }
 
 .animal {
+  position: relative;
   width: calc(min(calc(40 * var(--u)), 340px) * var(--s));
   height: calc(min(calc(40 * var(--u)), 340px) * var(--s));
   flex: none;
@@ -142,6 +157,22 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 
 .animal.cheer {
   animation: cheer 0.45s ease-in-out infinite alternate;
+}
+
+.badge {
+  position: absolute;
+  top: -4%;
+  right: -4%;
+  display: grid;
+  place-items: center;
+  width: calc(min(calc(40 * var(--u)), 340px) * 0.22);
+  height: calc(min(calc(40 * var(--u)), 340px) * 0.22);
+  border-radius: 50%;
+  background: #ff9f1c;
+  color: #fff;
+  font-size: calc(min(calc(40 * var(--u)), 340px) * 0.13);
+  font-weight: 800;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.15);
 }
 
 .animal.dim {

@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
 import GameShell from '@/components/GameShell.vue'
+import ProgressDots from '@/components/ProgressDots.vue'
 import RewardBurst from '@/components/RewardBurst.vue'
 import ShapeIcon from '@/components/ShapeIcon.vue'
 import { COLORS } from '@/lib/colors'
 import { useLevel } from '@/lib/difficulty'
-import { dragBetween, useIdleHints } from '@/lib/hints'
+import { centerOf, dragBetween, useIdleHints } from '@/lib/hints'
 import { useT, type ShapeKind } from '@/lib/i18n'
-import { shuffle } from '@/lib/random'
+import { pick, shuffle } from '@/lib/random'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
 
@@ -21,8 +22,32 @@ interface Piece {
 
 const KINDS: ShapeKind[] = ['circle', 'square', 'triangle', 'star', 'heart', 'hexagon']
 
+const GOAL = 3
+
+interface Item {
+  id: number
+  kind: ShapeKind
+  color: string
+}
+
 const t = useT()
-const prompt = computed(() => t.value.shapesPrompt)
+
+// Three kinds of round: drag shapes into holes, find a named shape, or spot the odd one out.
+const mode = ref<'drag' | 'find' | 'odd'>('drag')
+const items = ref<Item[]>([])
+const answerId = ref(0)
+const findKind = ref<ShapeKind>('circle')
+const taskId = ref(0)
+const found = ref(0)
+const solved = ref(false)
+const wobblingId = ref<number | null>(null)
+let timer: number | undefined
+
+const prompt = computed(() => {
+  if (mode.value === 'find') return t.value.shapesFind(findKind.value)
+  if (mode.value === 'odd') return t.value.shapesOdd
+  return t.value.shapesPrompt
+})
 
 const levelOf = useLevel()
 const round = ref(0)
@@ -40,7 +65,61 @@ function setHoleEl(id: number, el: unknown) {
   else holeEls.delete(id)
 }
 
+function newTask() {
+  const colors = shuffle(Object.values(COLORS))
+  const size = levelOf(round.value) >= 3 ? 5 : 4
+  if (mode.value === 'find') {
+    const kinds = shuffle(KINDS).slice(0, size)
+    items.value = kinds.map((kind, id) => ({ id, kind, color: colors[id] as string }))
+    const target = pick(items.value)
+    answerId.value = target.id
+    findKind.value = target.kind
+  } else {
+    // Several of one shape in one colour and a single different one: only the form gives it away.
+    const [same, odd] = shuffle(KINDS) as [ShapeKind, ShapeKind]
+    const color = colors[0] as string
+    const list = [...Array.from({ length: size - 1 }, () => same), odd]
+    items.value = shuffle(list).map((kind, id) => ({ id, kind, color }))
+    answerId.value = items.value.find((x) => x.kind === odd)!.id
+  }
+  taskId.value++
+  solved.value = false
+  say(prompt.value)
+}
+
+function tapItem(item: Item) {
+  if (solved.value || celebrating.value) return
+  if (item.id === answerId.value) {
+    solved.value = true
+    found.value++
+    sfx.snap()
+    say(t.value.shapes[item.kind])
+    timer = window.setTimeout(() => {
+      if (found.value >= GOAL) celebrating.value = true
+      else newTask()
+    }, 1600)
+  } else {
+    wobblingId.value = item.id
+    sfx.tap()
+    say(t.value.shapes[item.kind])
+    window.setTimeout(() => (wobblingId.value = null), 500)
+  }
+}
+
 function newRound() {
+  found.value = 0
+  if (round.value === 0) mode.value = 'drag'
+  else {
+    // Never the same kind of round twice in a row; the odd-one-out game starts a bit later.
+    const options = (['drag', 'find', 'odd'] as const).filter(
+      (m) => m !== mode.value && (m !== 'odd' || levelOf(round.value) >= 1),
+    )
+    mode.value = pick(options)
+  }
+  if (mode.value !== 'drag') {
+    newTask()
+    return
+  }
   // Start with two shapes and slowly add more, up to four.
   const count = Math.min(2 + Math.floor(levelOf(round.value) / 2), 4)
   const colors = shuffle(Object.values(COLORS))
@@ -129,8 +208,9 @@ function pieceStyle(piece: Piece) {
 const { hint } = useIdleHints({
   game: 'shapes',
   prompt: () => prompt.value,
-  paused: () => celebrating.value || drag.id !== null,
+  paused: () => celebrating.value || drag.id !== null || solved.value,
   target: () => {
+    if (mode.value !== 'drag') return centerOf(document.querySelector(`[data-find="${answerId.value}"]`))
     const piece = trayOrder.value.find((p) => !p.placed)
     if (!piece) return null
     return dragBetween(
@@ -144,11 +224,34 @@ onMounted(() => {
   newRound()
   say(prompt.value)
 })
+onBeforeUnmount(() => window.clearTimeout(timer))
 </script>
 
 <template>
   <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #ffd9e4 0%, #fff1d6 100%)">
-    <div class="board">
+    <template v-if="mode !== 'drag'" #status>
+      <ProgressDots :total="GOAL" :done="found" color="#f15bb5" />
+    </template>
+
+    <div v-if="mode !== 'drag'" class="find">
+      <button
+        v-for="(it, i) in items"
+        :key="`${taskId}-${it.id}`"
+        class="find-item"
+        :data-find="it.id"
+        :class="{
+          wobble: wobblingId === it.id,
+          cheer: solved && it.id === answerId,
+          dim: solved && it.id !== answerId,
+        }"
+        :style="{ animationDelay: `${i * 80}ms` }"
+        @click="tapItem(it)"
+      >
+        <ShapeIcon :kind="it.kind" :color="it.color" />
+      </button>
+    </div>
+
+    <div v-if="mode === 'drag'" class="board">
       <div class="holes">
         <div v-for="p in holeOrder" :key="p.id" :ref="(el) => setHoleEl(p.id, el)" class="slot hole" :data-hole="p.id">
           <ShapeIcon v-if="!p.placed" :kind="p.kind" hole />
@@ -159,7 +262,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="tray">
+    <div v-if="mode === 'drag'" class="tray">
       <div v-for="p in trayOrder" :key="p.id" class="slot">
         <div
           v-if="!p.placed"
@@ -195,6 +298,68 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.find {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  gap: calc(4 * var(--u));
+}
+
+.find-item {
+  --size: min(calc(22 * var(--u)), 200px);
+  display: grid;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+  padding: calc(var(--size) * 0.1);
+  border-radius: 32%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.1);
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.find-item:active {
+  transform: scale(0.94);
+}
+
+.find-item.cheer {
+  animation: cheer 0.45s ease-in-out infinite alternate;
+  background: #fff;
+}
+
+.find-item.dim {
+  opacity: 0.35;
+}
+
+.find-item.wobble {
+  animation: wobble 0.45s;
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes cheer {
+  from {
+    transform: translateY(0) scale(1.05);
+  }
+  to {
+    transform: translateY(-10%) scale(1.15);
+  }
 }
 
 .holes,

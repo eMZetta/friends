@@ -87,10 +87,20 @@ wo-ist-der-loewe.mp3;"Wo ist der Löwe?";no
 der-loewe-macht-roaaar.mp3;"Der Löwe macht Roaaar!";no
 roaaar-das-ist-der-loewe.mp3;"Roaaar! Das ist der Löwe.";no
 der-loewe.mp3;"Der Löwe!";no
+wer-sagt-miau.mp3;"Wer sagt Miau?";no
+wer-sagt-wau-wau.mp3;"Wer sagt Wau wau?";no
+wer-sagt-muuuh.mp3;"Wer sagt Muuuh?";no
+wer-sagt-grunz-grunz.mp3;"Wer sagt Grunz grunz?";no
+wer-sagt-maeaeaeh.mp3;"Wer sagt Määäh?";no
+wer-sagt-quak-quak.mp3;"Wer sagt Quak quak?";no
+wer-sagt-quaaak.mp3;"Wer sagt Quaaak?";no
+wer-sagt-roaaar.mp3;"Wer sagt Roaaar?";no
 finde-die-paare.mp3;"Finde die Paare!";no
 was-kommt-als-naechstes.mp3;"Was kommt als Nächstes?";no
 mach-musik-tippe-auf-die-bunten-staebe.mp3;"Mach Musik! Tippe auf die bunten Stäbe.";no
 welches-tier-ist-der-schatten.mp3;"Welches Tier ist der Schatten?";no
+welcher-schatten-passt.mp3;"Welcher Schatten passt?";no
+tippe-die-tiere-der-groesse-nach-an-erst-das-kleinste.mp3;"Tippe die Tiere der Größe nach an: erst das kleinste!";no
 tippe-auf-das-grosse-tier.mp3;"Tippe auf das große Tier!";no
 tippe-auf-das-kleine-tier.mp3;"Tippe auf das kleine Tier!";no
 tippe-auf-das-groesste-tier.mp3;"Tippe auf das größte Tier!";no
@@ -118,6 +128,60 @@ s.mp3;"S";no
 e.mp3;"E";no
 f.mp3;"F";no
 l.mp3;"L";no
+welches-tier-faengt-mit-k-an.mp3;"Welches Tier fängt mit K an?";no
+welches-tier-faengt-mit-h-an.mp3;"Welches Tier fängt mit H an?";no
+welches-tier-faengt-mit-s-an.mp3;"Welches Tier fängt mit S an?";no
+welches-tier-faengt-mit-e-an.mp3;"Welches Tier fängt mit E an?";no
+welches-tier-faengt-mit-f-an.mp3;"Welches Tier fängt mit F an?";no
+welches-tier-faengt-mit-l-an.mp3;"Welches Tier fängt mit L an?";no
+gib-mir-1-aepfel.mp3;"Gib mir 1 Äpfel!";no
+gib-mir-2-aepfel.mp3;"Gib mir 2 Äpfel!";no
+gib-mir-3-aepfel.mp3;"Gib mir 3 Äpfel!";no
+gib-mir-4-aepfel.mp3;"Gib mir 4 Äpfel!";no
+gib-mir-5-aepfel.mp3;"Gib mir 5 Äpfel!";no
+gib-mir-6-aepfel.mp3;"Gib mir 6 Äpfel!";no
+gib-mir-7-aepfel.mp3;"Gib mir 7 Äpfel!";no
+gib-mir-8-aepfel.mp3;"Gib mir 8 Äpfel!";no
+gib-mir-9-aepfel.mp3;"Gib mir 9 Äpfel!";no
+gib-mir-10-aepfel.mp3;"Gib mir 10 Äpfel!";no
+gib-mir-1-sterne.mp3;"Gib mir 1 Sterne!";no
+gib-mir-2-sterne.mp3;"Gib mir 2 Sterne!";no
+gib-mir-3-sterne.mp3;"Gib mir 3 Sterne!";no
+gib-mir-4-sterne.mp3;"Gib mir 4 Sterne!";no
+gib-mir-5-sterne.mp3;"Gib mir 5 Sterne!";no
+gib-mir-6-sterne.mp3;"Gib mir 6 Sterne!";no
+gib-mir-7-sterne.mp3;"Gib mir 7 Sterne!";no
+gib-mir-8-sterne.mp3;"Gib mir 8 Sterne!";no
+gib-mir-9-sterne.mp3;"Gib mir 9 Sterne!";no
+gib-mir-10-sterne.mp3;"Gib mir 10 Sterne!";no
+gib-mir-1-fische.mp3;"Gib mir 1 Fische!";no
+gib-mir-2-fische.mp3;"Gib mir 2 Fische!";no
+gib-mir-3-fische.mp3;"Gib mir 3 Fische!";no
+gib-mir-4-fische.mp3;"Gib mir 4 Fische!";no
+gib-mir-5-fische.mp3;"Gib mir 5 Fische!";no
+gib-mir-6-fische.mp3;"Gib mir 6 Fische!";no
+gib-mir-7-fische.mp3;"Gib mir 7 Fische!";no
+gib-mir-8-fische.mp3;"Gib mir 8 Fische!";no
+gib-mir-9-fische.mp3;"Gib mir 9 Fische!";no
+gib-mir-10-fische.mp3;"Gib mir 10 Fische!";no
+gib-mir-1-blumen.mp3;"Gib mir 1 Blumen!";no
+gib-mir-2-blumen.mp3;"Gib mir 2 Blumen!";no
+gib-mir-3-blumen.mp3;"Gib mir 3 Blumen!";no
+gib-mir-4-blumen.mp3;"Gib mir 4 Blumen!";no
+gib-mir-5-blumen.mp3;"Gib mir 5 Blumen!";no
+gib-mir-6-blumen.mp3;"Gib mir 6 Blumen!";no
+gib-mir-7-blumen.mp3;"Gib mir 7 Blumen!";no
+gib-mir-8-blumen.mp3;"Gib mir 8 Blumen!";no
+gib-mir-9-blumen.mp3;"Gib mir 9 Blumen!";no
+gib-mir-10-blumen.mp3;"Gib mir 10 Blumen!";no
+finde-den-kreis.mp3;"Finde den Kreis!";no
+finde-das-quadrat.mp3;"Finde das Quadrat!";no
+finde-das-dreieck.mp3;"Finde das Dreieck!";no
+finde-den-stern.mp3;"Finde den Stern!";no
+finde-das-herz.mp3;"Finde das Herz!";no
+finde-das-sechseck.mp3;"Finde das Sechseck!";no
+welche-form-ist-anders.mp3;"Welche Form ist anders?";no
+lass-die-ballone-der-reihe-nach-platzen-1-2-3.mp3;"Lass die Ballone der Reihe nach platzen: 1, 2, 3!";no
 alle-meine-entchen.mp3;"Alle meine Entchen";no
 funkel-funkel-kleiner-stern.mp3;"Funkel, funkel, kleiner Stern";no
 haenschen-klein.mp3;"Hänschen klein";no

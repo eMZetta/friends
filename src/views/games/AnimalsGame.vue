@@ -27,7 +27,9 @@ const wobbling = ref<AnimalKind | null>(null)
 const busy = ref(false)
 const celebrating = ref(false)
 
-const prompt = computed(() => t.value.animalWhere(target.value))
+// Two kinds of question that take turns: "Where is the cow?" and "Who says moo?".
+const mode = ref<'where' | 'sound'>('where')
+const prompt = computed(() => (mode.value === 'sound' ? t.value.animalWho(target.value) : t.value.animalWhere(target.value)))
 
 let timer: number | undefined
 
@@ -35,6 +37,7 @@ function newSet() {
   const count = levelOf(round.value) < 2 ? 3 : 4
   target.value = pick(ANIMALS.filter((a) => a !== target.value))
   choices.value = shuffle([target.value, ...shuffle(ANIMALS.filter((a) => a !== target.value)).slice(0, count - 1)])
+  if (Math.random() < 0.75) mode.value = mode.value === 'where' ? 'sound' : 'where'
   setId.value++
   cheering.value = null
   busy.value = false

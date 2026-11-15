@@ -7,7 +7,7 @@ import RewardBurst from '@/components/RewardBurst.vue'
 import { COLOR_IDS, COLORS, type ColorId } from '@/lib/colors'
 import { centerOf, useIdleHints } from '@/lib/hints'
 import { useT } from '@/lib/i18n'
-import { pick, shuffle } from '@/lib/random'
+import { pick, randInt, shuffle } from '@/lib/random'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
 
@@ -20,6 +20,7 @@ interface Balloon {
   phase: number
   popped: boolean
   wobble: boolean
+  num?: number
 }
 
 const GOAL = 5
@@ -35,10 +36,14 @@ const palette = ref<ColorId[]>([])
 const popped = ref(0)
 const celebrating = ref(false)
 
-const prompt = computed(() => t.value.balloonsPrompt(target.value))
+// Two kinds of round: pop the balloons of one colour, or pop the numbered balloons in order 1, 2, 3 …
+const mode = ref<'color' | 'number'>('color')
+const nextNum = ref(1)
+const prompt = computed(() => (mode.value === 'number' ? t.value.balloonsOrder : t.value.balloonsPrompt(target.value)))
 const balloonW = computed(() => Math.min(Math.max(size.value.w * 0.12, 90), 150))
 
 let nextId = 0
+let round = 0
 let spawnIn = 0
 let lastTime = 0
 let raf = 0
@@ -48,7 +53,19 @@ function newRound() {
   target.value = pick(COLOR_IDS.filter((c) => c !== target.value))
   palette.value = [target.value, ...shuffle(COLOR_IDS.filter((c) => c !== target.value)).slice(0, 3)]
   popped.value = 0
+  nextNum.value = 1
+  // A new kind of round starts with a fresh sky, so no balloon is left over from the old rules.
+  balloons.value = []
+  mode.value = round > 0 && Math.random() < 0.5 ? 'number' : 'color'
+  round++
   say(prompt.value)
+}
+
+/** Mostly the number that is needed next, so there is always something to pop. */
+function numberForNewBalloon() {
+  const needed = nextNum.value
+  const onScreen = balloons.value.some((b) => !b.popped && b.num === needed)
+  return !onScreen || Math.random() < 0.4 ? needed : randInt(needed, GOAL)
 }
 
 function spawn() {
@@ -64,6 +81,7 @@ function spawn() {
     phase: Math.random() * Math.PI * 2,
     popped: false,
     wobble: false,
+    num: mode.value === 'number' ? numberForNewBalloon() : undefined,
   })
 }
 
@@ -89,8 +107,33 @@ function tick(now: number) {
   raf = requestAnimationFrame(tick)
 }
 
+function popOne(b: Balloon) {
+  b.popped = true
+  sfx.pop()
+  window.setTimeout(() => {
+    balloons.value = balloons.value.filter((x) => x !== b)
+  }, 350)
+}
+
 function tap(b: Balloon) {
   if (b.popped || celebrating.value) return
+  if (mode.value === 'number') {
+    if (b.num === nextNum.value) {
+      popOne(b)
+      // Twins with the same number pop along, so no balloon is left over for a number that is done.
+      for (const other of balloons.value) if (!other.popped && other.num === b.num) popOne(other)
+      popped.value++
+      say(String(b.num))
+      nextNum.value++
+      if (popped.value >= GOAL) window.setTimeout(() => (celebrating.value = true), 500)
+    } else {
+      b.wobble = true
+      sfx.wrong()
+      say(String(b.num))
+      window.setTimeout(() => (b.wobble = false), 500)
+    }
+    return
+  }
   if (b.color === target.value) {
     b.popped = true
     sfx.pop()
@@ -130,7 +173,8 @@ const { hint } = useIdleHints({
   paused: () => celebrating.value,
   target: () => {
     const h = size.value.h
-    const b = balloons.value.find((x) => x.color === target.value && !x.popped && x.y > h * 0.15 && x.y < h * 0.7)
+    const wanted = (x: Balloon) => (mode.value === 'number' ? x.num === nextNum.value : x.color === target.value)
+    const b = balloons.value.find((x) => wanted(x) && !x.popped && x.y > h * 0.15 && x.y < h * 0.7)
     return b ? centerOf(document.querySelector(`[data-balloon="${b.id}"]`)) : null
   },
 })
@@ -157,7 +201,7 @@ onBeforeUnmount(() => {
 <template>
   <GameShell :prompt="prompt" :hint="hint" background="linear-gradient(180deg, #8a7be0 0%, #f4a3b4 55%, #ffd9a8 100%)">
     <template #status>
-      <ProgressDots :total="GOAL" :done="popped" :color="COLORS[target]" />
+      <ProgressDots :total="GOAL" :done="popped" :color="mode === 'number' ? '#ffd23f' : COLORS[target]" />
     </template>
 
     <div ref="stage" class="sky">
@@ -175,6 +219,20 @@ onBeforeUnmount(() => {
           <ellipse cx="30" cy="36" rx="27" ry="33" :fill="COLORS[b.color]" />
           <path d="M25 68 L35 68 L30 74 Z" :fill="COLORS[b.color]" />
           <ellipse cx="19" cy="24" rx="5" ry="10" fill="rgba(255,255,255,0.5)" transform="rotate(20 19 24)" />
+          <text
+            v-if="b.num"
+            x="30"
+            y="50"
+            text-anchor="middle"
+            font-size="34"
+            font-weight="800"
+            fill="#fff"
+            stroke="rgba(0,0,0,0.25)"
+            stroke-width="1.5"
+            paint-order="stroke"
+          >
+            {{ b.num }}
+          </text>
         </svg>
         <span v-if="b.popped" class="burst">
           <i v-for="n in 8" :key="n" :style="{ '--a': `${n * 45}deg`, background: COLORS[b.color] }" />
