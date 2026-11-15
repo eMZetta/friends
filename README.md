@@ -34,6 +34,8 @@ yarn lint
 
 ## Struktur
 
+Für Mitwirkende und Agenten: `AGENTS.md` (Hintergrund, Aufbau, Fallstricke) und `TODO.md` (offene Aufgaben).
+
 - `src/views/HomeView.vue` – Startbildschirm mit Spielauswahl
 - `src/views/games/` – die einzelnen Spiele
 - `src/components/` – Maskottchen, Belohnung, Eltern-Gate, Spielrahmen
