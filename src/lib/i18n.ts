@@ -150,6 +150,67 @@ const de = {
   ],
   storyHeart: 'Galip hat dich ein Stück lieber!',
   bestFriends: 'Beste Freunde!',
+  coffee: {
+    title: 'Kaffeekasse',
+    intro: 'Galip ist und bleibt gratis. Wenn du magst, kannst du freiwillig einen Kaffee spendieren – du bekommst dafür nichts freigeschaltet, es ändert sich nichts.',
+    free: 'Rein freiwillig. Galip ist für alle gleich, ob mit oder ohne Spende.',
+    onlyInApp: 'Spenden sind nur in der App aus dem App Store oder von Google Play möglich.',
+    unavailable: 'Der Store ist gerade nicht erreichbar. Bitte später nochmals versuchen.',
+    confirm: (price: string) => `${price} in die Kaffeekasse?`,
+    holdHint: 'Zum Bestätigen gedrückt halten. Danach fragt dich noch dein Gerät.',
+    hold: 'Gedrückt halten',
+    waiting: 'Einen Moment …',
+    change: 'Anderen Betrag wählen',
+    thanks: 'Vielen herzlichen Dank! ☕ Das freut Galip und mich sehr.',
+    cancelled: 'Abgebrochen – es wurde nichts abgebucht.',
+    failed: 'Das hat leider nicht geklappt. Es wurde nichts abgebucht.',
+    more: 'Mehr dazu und Impressum',
+    back: 'Zurück',
+  },
+  about: {
+    title: 'Über Galip & Impressum',
+    imprint: 'Impressum',
+    sections: [
+      {
+        heading: 'Warum es Galip gibt',
+        paragraphs: [
+          'Galip ist für meine Nichte entstanden. Sie wollte unbedingt am alten iPad der Grosseltern spielen – und die Kinderspiele in den App-Stores sind voller Werbung, Pro-Versionen und Abos, ein einziges grosses Geschäft. Das wollte ich nicht.',
+          'Darum gibt es jetzt etwas Gescheites zum Spielen für die Kleinsten: kostenlos, ruhig und für alle Familien da. Und Galip, mein Hund, soll dabei ihr Freund werden.',
+        ],
+      },
+      {
+        heading: 'Gratis – und das bleibt so',
+        paragraphs: [
+          'Galip ist zu 100 % gratis. Keine Werbung, keine Abos, keine Pro-Version, nichts ist gesperrt. Alle Spiele stehen allen Kindern offen.',
+        ],
+      },
+      {
+        heading: 'Datenschutz',
+        paragraphs: [
+          'Es werden keine Daten gesammelt: keine Konten, kein Tracking, keine Statistik-Dienste, keine Werbe-Netzwerke. Galip läuft ohne Internet, und was die App sich merkt (Sprache, Sticker, Spielzeit), bleibt auf diesem Gerät.',
+          'Auch bei einer Spende erfahre ich nicht, wer sie gemacht hat. Die Zahlung läuft allein über Apple bzw. Google; mich erreicht nur eine anonyme Abrechnung.',
+        ],
+      },
+      {
+        heading: 'Die Kaffeekasse',
+        paragraphs: [
+          'Wer möchte, kann mir als Erwachsener einen Kaffee spendieren (CHF 2, 5, 10 oder 20). Das hilft, die Entwicklerkonten bei Apple und Google zu bezahlen und Galip weiterzubauen. Apple und Google behalten dabei einen Teil des Betrags.',
+          'Eine Spende ist ein Geschenk: Es gibt keine Gegenleistung, und sie ist nicht steuerlich absetzbar.',
+        ],
+      },
+      {
+        heading: 'Sicher vor Kinderfingern',
+        paragraphs: [
+          'Die Kaffeekasse ist mehrfach gesichert: Eltern-Gate, ein zweites Gate mit neuer Zahl, ein Knopf, den man gedrückt halten muss, und zuletzt die Bestätigung deines Geräts (z. B. Face ID oder Passwort).',
+          'Zusätzlich kannst du in den Einstellungen deines Geräts Käufe sperren (Bildschirmzeit › Inhaltsbeschränkungen bzw. Familienfreigabe).',
+        ],
+      },
+      {
+        heading: 'Noch mehr für Kinder',
+        paragraphs: ['Wer weitere Spiele für Kinder sucht: Auch «Lucas & Friends» ist einen Blick wert.'],
+      },
+    ],
+  },
   hearts: 'Galips Herzen',
   pause: { title: 'Galip macht Pause', text: 'Für heute haben wir genug gespielt. Bis morgen!' },
   praise: ['Super!', 'Toll gemacht!', 'Prima!', 'Klasse!', 'Wunderbar!'],
@@ -267,6 +328,67 @@ const en: Messages = {
   ],
   storyHeart: 'Galip likes you a little more!',
   bestFriends: 'Best friends!',
+  coffee: {
+    title: 'Coffee box',
+    intro: 'Galip is and stays free. If you like, you can voluntarily buy me a coffee – nothing gets unlocked and nothing changes.',
+    free: 'Entirely voluntary. Galip is the same for everyone, with or without a donation.',
+    onlyInApp: 'Donations are only possible in the app from the App Store or Google Play.',
+    unavailable: 'The store is not reachable right now. Please try again later.',
+    confirm: (price: string) => `${price} into the coffee box?`,
+    holdHint: 'Press and hold to confirm. Your device will ask once more afterwards.',
+    hold: 'Press and hold',
+    waiting: 'One moment …',
+    change: 'Choose another amount',
+    thanks: 'Thank you so much! ☕ Galip and I are very happy.',
+    cancelled: 'Cancelled – nothing was charged.',
+    failed: 'That did not work. Nothing was charged.',
+    more: 'More about this, and imprint',
+    back: 'Back',
+  },
+  about: {
+    title: 'About Galip & imprint',
+    imprint: 'Imprint',
+    sections: [
+      {
+        heading: 'Why Galip exists',
+        paragraphs: [
+          "Galip was made for my niece. She wanted to play on her grandparents' old iPad – and the children's games in the app stores are full of ads, pro versions and subscriptions, one big business. I didn't want that.",
+          'So now there is something decent for the little ones to play: free, calm and there for every family. And Galip, my dog, is meant to become her friend.',
+        ],
+      },
+      {
+        heading: 'Free – and it stays that way',
+        paragraphs: [
+          'Galip is 100% free. No ads, no subscriptions, no pro version, nothing is locked. All games are open to all children.',
+        ],
+      },
+      {
+        heading: 'Privacy',
+        paragraphs: [
+          "No data is collected: no accounts, no tracking, no analytics, no ad networks. Galip works without internet, and what the app remembers (language, stickers, play time) stays on this device.",
+          "Even with a donation I don't learn who made it. The payment runs entirely through Apple or Google; I only receive an anonymous statement.",
+        ],
+      },
+      {
+        heading: 'The coffee box',
+        paragraphs: [
+          'Adults who wish to can buy me a coffee (CHF 2, 5, 10 or 20). It helps pay for the developer accounts at Apple and Google and to keep building Galip. Apple and Google keep a share of the amount.',
+          'A donation is a gift: there is nothing in return, and it is not tax-deductible.',
+        ],
+      },
+      {
+        heading: 'Safe from little fingers',
+        paragraphs: [
+          "The coffee box is protected several times over: the parents' gate, a second gate with a new number, a button you have to hold, and finally your device's own confirmation (e.g. Face ID or password).",
+          "You can also block purchases in your device's settings (Screen Time › Content restrictions, or Family Sharing).",
+        ],
+      },
+      {
+        heading: 'More for children',
+        paragraphs: ['If you are looking for more games for children: “Lucas & Friends” is worth a look, too.'],
+      },
+    ],
+  },
   hearts: "Galip's hearts",
   pause: { title: 'Galip is taking a break', text: "We've played enough for today. See you tomorrow!" },
   praise: ['Great job!', 'Well done!', 'Awesome!', 'Yay!', 'Wonderful!'],

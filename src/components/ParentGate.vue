@@ -1,51 +1,28 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 
+import AboutText from '@/components/AboutText.vue'
+import CoffeeBox from '@/components/CoffeeBox.vue'
+import GateChallenge from '@/components/GateChallenge.vue'
 import { DIFFICULTIES } from '@/lib/difficulty'
 import { GAME_IDS, LIMIT_OPTIONS } from '@/lib/games'
-import { numberToWords, useT, type Lang } from '@/lib/i18n'
+import { useT, type Lang } from '@/lib/i18n'
 import { hasMusic } from '@/lib/music'
-import { randInt } from '@/lib/random'
-import { useGate } from '@/stores/gate'
 import { useSettings } from '@/stores/settings'
 import { useStats } from '@/stores/stats'
 import { useUsage } from '@/stores/usage'
 
 // Apple's Kids Category requires a parental gate in front of settings and outside links.
-// The number is spelled out, so it needs reading skills a 2–5 year old doesn't have yet.
 
 const t = useT()
 const settings = useSettings()
 const usage = useUsage()
 const stats = useStats()
-// After a few wrong answers the gate locks (also across app restarts), so a child can't guess its way in.
-const gate = useGate()
 
 const open = ref(false)
 const unlocked = ref(false)
-const target = ref(0)
-const entry = ref('')
-const shake = ref(false)
-const locked = ref(false)
-let lockTimer: number | undefined
-
-const targetWords = computed(() => numberToWords(target.value, settings.lang))
-
-function newChallenge() {
-  let n = randInt(21, 99)
-  while (n % 10 === 0) n = randInt(21, 99)
-  target.value = n
-  entry.value = ''
-}
-
-function startLock() {
-  locked.value = true
-  window.clearTimeout(lockTimer)
-  lockTimer = window.setTimeout(() => {
-    locked.value = false
-    newChallenge()
-  }, gate.remaining())
-}
+// Sub-pages of the unlocked panel; the coffee box asks for a second gate of its own.
+const page = ref<'settings' | 'coffee' | 'about'>('settings')
 
 // Time spent in the parents' panel is not play time.
 watch(open, (isOpen) => (usage.paused = isOpen))
@@ -59,35 +36,14 @@ const overview = computed(() =>
 )
 
 function show() {
-  newChallenge()
   unlocked.value = false
+  page.value = 'settings'
   open.value = true
-  if (gate.remaining() > 0) startLock()
 }
 
 function close() {
   open.value = false
 }
-
-function press(digit: number) {
-  if (locked.value || shake.value || entry.value.length >= 2) return
-  entry.value += String(digit)
-  if (entry.value.length < 2) return
-  if (Number(entry.value) === target.value) {
-    gate.succeed()
-    unlocked.value = true
-  } else {
-    shake.value = true
-    const locks = gate.fail()
-    window.setTimeout(() => {
-      shake.value = false
-      if (locks) startLock()
-      else newChallenge()
-    }, 450)
-  }
-}
-
-onBeforeUnmount(() => window.clearTimeout(lockTimer))
 
 const languages: { id: Lang; label: string }[] = [
   { id: 'de', label: 'Deutsch' },
@@ -107,20 +63,13 @@ const languages: { id: Lang; label: string }[] = [
   <Transition name="fade">
     <div v-if="open" class="backdrop" @click.self="close">
       <div class="panel">
-        <template v-if="!unlocked">
-          <h2>{{ t.parents.gateTitle }}</h2>
-          <p>{{ t.parents.gateAsk }}</p>
-          <p v-if="locked" class="words">{{ t.parents.locked }}</p>
-          <template v-else>
-            <p class="words">{{ targetWords }}</p>
-            <div class="entry" :class="{ shake }">
-              <span>{{ entry[0] ?? '_' }}</span>
-              <span>{{ entry[1] ?? '_' }}</span>
-            </div>
-            <div class="keypad">
-              <button v-for="d in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]" :key="d" @click="press(d)">{{ d }}</button>
-            </div>
-          </template>
+        <GateChallenge v-if="!unlocked" @pass="unlocked = true" />
+
+        <CoffeeBox v-else-if="page === 'coffee'" @back="page = 'settings'" @about="page = 'about'" />
+
+        <template v-else-if="page === 'about'">
+          <AboutText />
+          <button class="reset" @click="page = 'settings'">{{ t.coffee.back }}</button>
         </template>
 
         <template v-else>
@@ -222,6 +171,10 @@ const languages: { id: Lang; label: string }[] = [
           </div>
           <p class="about">{{ t.parents.tips }}</p>
           <p class="about">{{ t.parents.about }}</p>
+          <div class="more">
+            <button class="reset" @click="page = 'coffee'">☕ {{ t.coffee.title }}</button>
+            <button class="reset" @click="page = 'about'">{{ t.about.title }}</button>
+          </div>
         </template>
 
         <button class="close" @click="close">{{ t.parents.close }}</button>
@@ -278,46 +231,12 @@ p {
   margin: 4px 0;
 }
 
-.words {
-  font-size: 26px;
-  font-weight: 700;
-  margin: 12px 0;
-}
-
-.entry {
+.more {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
-  font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-
-.entry span {
-  width: 52px;
-  border-bottom: 4px solid #c9d3df;
-}
-
-.entry.shake {
-  animation: shake 0.4s;
-}
-
-.keypad {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-}
-
-.keypad button {
-  height: 56px;
-  border-radius: 14px;
-  background: #eef3f8;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.keypad button:active {
-  background: #d6e2ee;
+  gap: 8px;
+  margin-top: 16px;
 }
 
 .row {
@@ -421,19 +340,6 @@ p {
   color: #fff;
   font-size: 18px;
   font-weight: 700;
-}
-
-@keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-10px);
-  }
-  75% {
-    transform: translateX(10px);
-  }
 }
 
 .fade-enter-active,

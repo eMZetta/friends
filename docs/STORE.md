@@ -38,7 +38,7 @@ kleinkind,kindergarten,vorschule,formen,zählen,zahlen,farben,tiere,memory,xylop
 <!-- /store -->
 
 <!-- store:de:description -->
-Galip ist eine fröhliche Lern-App für Kinder von 3 bis 6 Jahren – komplett kostenlos, ohne Werbung, ohne In-App-Käufe und ohne Datensammlung. Einfach dem Kind das iPad geben und mitstaunen.
+Galip ist eine fröhliche Lern-App für Kinder von 3 bis 6 Jahren – komplett kostenlos, ohne Werbung, ohne Abos, ohne Pro-Version und ohne Datensammlung. Einfach dem Kind das iPad geben und mitstaunen.
 
 Galip, der lebenslustige Border Terrier, begleitet dein Kind durch elf Lernspiele. Galip erklärt alles mit Stimme, so dass auch Kinder, die noch nicht lesen können, sofort losspielen.
 
@@ -61,7 +61,8 @@ FÜR KLEINE HÄNDE GEMACHT
 • Nach jeder Runde gibt es einen Sticker für das eigene Sticker-Album
 
 FÜR ELTERN
-• 100 % kostenlos – keine Werbung, keine Käufe, keine Abos
+• 100 % kostenlos – keine Werbung, keine Abos, nichts gesperrt
+• Eine freiwillige Kaffeekasse für Eltern (CHF 2/5/10/20, hinter zwei Eltern-Gates) – sie schaltet nichts frei
 • Keine Datensammlung, kein Tracking, keine Konten, funktioniert offline
 • Altersgruppe (3–4, 4–5 oder 5–6 Jahre) und weitere Einstellungen sind durch ein Eltern-Gate geschützt
 • Ein Spiel verlässt man nur durch Gedrückthalten – Kinder landen nicht aus Versehen im Menü
@@ -94,7 +95,7 @@ kids,preschool,kindergarten,toddler,shapes,counting,numbers,colors,animals,memor
 <!-- /store -->
 
 <!-- store:en:description -->
-Galip is a cheerful learning app for children aged 3 to 6 – completely free, with no ads, no in-app purchases and no data collection. Just hand your child the iPad and enjoy watching them learn.
+Galip is a cheerful learning app for children aged 3 to 6 – completely free, with no ads, no subscriptions, no pro version and no data collection. Just hand your child the iPad and enjoy watching them learn.
 
 Galip, the lively Border Terrier, guides your child through eleven learning games. Every instruction is spoken, so children who can't read yet can start playing right away.
 
@@ -117,7 +118,8 @@ MADE FOR LITTLE HANDS
 • Every finished round earns a sticker for their own sticker album
 
 FOR PARENTS
-• 100% free – no ads, no purchases, no subscriptions
+• 100% free – no ads, no subscriptions, nothing locked
+• A voluntary coffee box for parents (CHF 2/5/10/20, behind two parental gates) – it unlocks nothing
 • No data collection, no tracking, no accounts, works offline
 • Age group (3–4, 4–5 or 5–6) and other settings are protected by a parental gate
 • Games can only be left by pressing and holding – no accidental exits
@@ -135,12 +137,15 @@ Hello! Galip is here – with eleven learning games and a sticker album to fill.
 
 ```
 Galip is a free learning app for children aged 3–6 (Kids category, 5 and under).
-It contains no ads, no in-app purchases, no analytics or third-party SDKs, no accounts
-and makes no network requests.
+It contains no ads, no analytics or third-party SDKs and no accounts. Its only in-app
+purchases are four optional consumable donations ("Coffee box", CHF 2/5/10/20) that unlock
+nothing; all content is free. Apart from the store's own purchase sheet it makes no network requests.
 
 Parental gate: on the home screen tap "For parents" (top right). The gate shows a
 number spelled out in words (e.g. "forty-seven"); enter it on the keypad (4, 7).
-Behind the gate are only the settings for language, sounds, music and voice.
+Behind the gate are the settings for language, sounds, music and voice, plus the "Coffee box".
+The coffee box asks for a second gate with a new number every time it is opened, then a
+confirmation button that must be held for 1.5 s, and finally the system purchase sheet.
 The app contains no external links.
 
 To leave a game, press and hold the house button (top left) for about one second.

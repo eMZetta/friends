@@ -52,7 +52,10 @@ Auf dem iPad die App **TestFlight** installieren und Galip testen.
 - **Kategorie:** Bildung, Unterkategorie *Kinder* → Altersgruppe **5 und jünger**.
 - **App-Datenschutz:** „Keine Daten erfasst“ (stimmt: kein Tracking, keine Server, keine Konten).
 - **Datenschutzerklärung-URL:** Pflicht, auch ohne Datenerfassung (z. B. GitHub Pages).
-- **Preis:** Kostenlos. Keine In-App-Käufe.
+- **Preis:** Kostenlos. Einzige In-App-Käufe: die vier freiwilligen Kaffeekasse-Spenden (siehe unten).
+- **In-App-Käufe (Kaffeekasse):** Vier **verbrauchbare** Produkte (App Store: „Consumable“, Google Play: „Verwalteter Artikel“ / Einmalkauf) mit exakt diesen IDs und Preisen:
+  `ch.lumikids.app.coffee2` (CHF 2), `…coffee5` (CHF 5), `…coffee10` (CHF 10), `…coffee20` (CHF 20). Pro Produkt Name „Kaffeekasse“ und eine Beschreibung wie „Freiwillige Spende – schaltet nichts frei“ in Deutsch und Englisch, dazu ein Review-Screenshot der Kaffeekasse. Apple: Preisstufen wählen, die CHF 2/5/10/20 am nächsten kommen; Vertrag „Bezahlte Apps“ und Bankdaten müssen eingerichtet sein. Google Play: Händlerkonto und Zahlungsprofil nötig.
+- **Apple-Review:** Spenden an Privatpersonen sind als In-App-Kauf erlaubt (Guideline 3.1.1). Die Kaffeekasse liegt hinter dem Eltern-Gate plus zweitem Gate, ist in den Review-Notizen zu erklären und schaltet nichts frei.
 - **Screenshots:** iPad 13" (Pflicht) und iPhone 6,9" (1320×2868 Hochformat), mind. 3 Stück.
 - **Altersfreigabe-Fragebogen:** überall „Keine“ → 4+.
 - **Test-Hinweis für Apple:** Eltern-Gate erklären („Für Eltern“ → ausgeschriebene Zahl eintippen).

@@ -2,6 +2,7 @@
 
 Kostenlose, werbefreie Lern-App für Kinder von 3–6 Jahren, primär für iPads (auch ältere Modelle mit iPadOS 15).
 Keine Werbung, kein Tracking, keine Logins, alles offline.
+Eine freiwillige „Kaffeekasse“ für Eltern (CHF 2/5/10/20) läuft über In-App-Käufe von App Store / Google Play, hinter zwei Eltern-Gates (`src/components/CoffeeBox.vue`, `src/lib/donate.ts`, Produkt-IDs `ch.lumikids.app.coffee<Betrag>`); Impressum-Daten in `src/lib/about.ts`.
 
 ## Spiele
 
