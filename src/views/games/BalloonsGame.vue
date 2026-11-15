@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, triggerRef } from 'vue'
 
+import BalloonIcon from '@/components/BalloonIcon.vue'
 import GameShell from '@/components/GameShell.vue'
 import ProgressDots from '@/components/ProgressDots.vue'
 import RewardBurst from '@/components/RewardBurst.vue'
@@ -214,11 +215,7 @@ onBeforeUnmount(() => {
         :style="balloonStyle(b)"
         @pointerdown="tap(b)"
       >
-        <svg viewBox="0 0 60 100" aria-hidden="true">
-          <path d="M30 72 Q22 84 32 98" stroke="#6b7a8c" stroke-width="1.5" fill="none" />
-          <ellipse cx="30" cy="36" rx="27" ry="33" :fill="COLORS[b.color]" />
-          <path d="M25 68 L35 68 L30 74 Z" :fill="COLORS[b.color]" />
-          <ellipse cx="19" cy="24" rx="5" ry="10" fill="rgba(255,255,255,0.5)" transform="rotate(20 19 24)" />
+        <BalloonIcon :color="b.color">
           <text
             v-if="b.num"
             x="30"
@@ -233,7 +230,7 @@ onBeforeUnmount(() => {
           >
             {{ b.num }}
           </text>
-        </svg>
+        </BalloonIcon>
         <span v-if="b.popped" class="burst">
           <i v-for="n in 8" :key="n" :style="{ '--a': `${n * 45}deg`, background: COLORS[b.color] }" />
         </span>

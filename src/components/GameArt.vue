@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AnimalIcon from '@/components/AnimalIcon.vue'
+import BalloonIcon from '@/components/BalloonIcon.vue'
 import CountItem from '@/components/CountItem.vue'
 import ShapeIcon from '@/components/ShapeIcon.vue'
 import { COLORS } from '@/lib/colors'
@@ -78,12 +79,7 @@ defineProps<{ kind: string }>()
       </svg>
     </template>
     <template v-else>
-      <svg v-for="c in ['red', 'blue', 'green'] as const" :key="c" viewBox="0 0 60 100" class="mini balloon">
-        <path d="M30 70 Q24 85 32 98" stroke="#7a8796" stroke-width="2" fill="none" />
-        <ellipse cx="30" cy="36" rx="26" ry="32" :fill="COLORS[c]" />
-        <path d="M26 66 L34 66 L30 72 Z" :fill="COLORS[c]" />
-        <ellipse cx="20" cy="24" rx="5" ry="9" fill="rgba(255,255,255,0.5)" />
-      </svg>
+      <BalloonIcon v-for="c in ['red', 'blue', 'green'] as const" :key="c" :color="c" class="mini balloon" />
     </template>
   </div>
 </template>
