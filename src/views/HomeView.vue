@@ -2,13 +2,10 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import AnimalIcon from '@/components/AnimalIcon.vue'
-import CountItem from '@/components/CountItem.vue'
 import GalipMascot from '@/components/GalipMascot.vue'
 import { ACTION_MS, IDLE_ACTIONS, TRICKS, type GalipAction } from '@/components/galipActions'
+import GameArt from '@/components/GameArt.vue'
 import ParentGate from '@/components/ParentGate.vue'
-import ShapeIcon from '@/components/ShapeIcon.vue'
-import { COLORS } from '@/lib/colors'
 import { useT } from '@/lib/i18n'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
@@ -23,19 +20,30 @@ const stickers = useStickers()
 const settings = useSettings()
 const friendship = useFriendship()
 
-const tiles = [
-  { route: 'shapes', key: 'shapes', color: '#ffb3c7' },
-  { route: 'count', key: 'count', color: '#ffe08a' },
-  { route: 'balloons', key: 'balloons', color: '#b8e8a8' },
-  { route: 'animals', key: 'animals', color: '#a8dcf5' },
-  { route: 'memory', key: 'memory', color: '#d4c8ff' },
-  { route: 'patterns', key: 'patterns', color: '#ffc9a3' },
-  { route: 'music', key: 'music', color: '#ffd1dc' },
-  { route: 'shadows', key: 'shadows', color: '#c9c3f5' },
-  { route: 'sizes', key: 'sizes', color: '#c6ecc0' },
-  { route: 'paint', key: 'paint', color: '#ffe3a8' },
-  { route: 'letters', key: 'letters', color: '#ffc6c6' },
-] as const
+type GameId = keyof typeof GAME_COLORS
+const GAME_COLORS = {
+  shapes: '#ffb3c7',
+  count: '#ffe08a',
+  balloons: '#b8e8a8',
+  animals: '#a8dcf5',
+  memory: '#d4c8ff',
+  patterns: '#ffc9a3',
+  music: '#ffd1dc',
+  shadows: '#c9c3f5',
+  sizes: '#c6ecc0',
+  paint: '#ffe3a8',
+  letters: '#ffc6c6',
+} as const
+
+// Elf Spiele sind in vier Welten sortiert: So sieht ein Kind vier große Ziele statt elf kleiner Kacheln.
+const WORLDS = [
+  { id: 'think', color: '#d9ccff', games: ['shapes', 'patterns', 'memory', 'sizes'] },
+  { id: 'numbers', color: '#ffe59a', games: ['count', 'letters'] },
+  { id: 'animals', color: '#a8dcf5', games: ['animals', 'shadows'] },
+  { id: 'colors', color: '#ffbdd0', games: ['balloons', 'music', 'paint'] },
+] as const satisfies readonly { id: string; color: string; games: readonly GameId[] }[]
+
+type World = (typeof WORLDS)[number]
 
 // Jede Kachel bekommt eine andere Form, damit die Startseite wie ein Holzspielzeug-Set wirkt statt wie ein Raster.
 const SHAPES = ['squircle', 'arch', 'round', 'leaf'] as const
@@ -49,9 +57,24 @@ const fireflies = Array.from({ length: 14 }, (_, id) => ({
   time: `${6 + (id % 5) * 1.4}s`,
 }))
 
-const visibleTiles = computed(() => tiles.filter((tile) => !settings.hiddenGames.includes(tile.key)))
+const gamesOf = (w: World) => w.games.filter((g) => !settings.hiddenGames.includes(g))
+const visibleWorlds = computed(() => WORLDS.filter((w) => gamesOf(w).length > 0))
+const leftWorlds = computed(() => visibleWorlds.value.slice(0, Math.ceil(visibleWorlds.value.length / 2)))
+const rightWorlds = computed(() => visibleWorlds.value.slice(Math.ceil(visibleWorlds.value.length / 2)))
 
-function play(route: (typeof tiles)[number]['route']) {
+const openedWorld = ref<World | null>(null)
+const openedGames = computed(() => (openedWorld.value ? gamesOf(openedWorld.value) : []))
+
+/** Eine Welt mit nur einem sichtbaren Spiel startet dieses direkt. */
+function openWorld(w: World) {
+  sfx.tap()
+  const games = gamesOf(w)
+  if (games.length === 1) return play(games[0]!)
+  say(t.value.worlds[w.id])
+  openedWorld.value = w
+}
+
+function play(route: GameId) {
   sfx.tap()
   say(t.value.games[route])
   void router.push({ name: route })
@@ -344,6 +367,20 @@ async function greet() {
     </header>
 
     <section class="content">
+      <nav class="worlds left">
+        <button
+          v-for="(w, i) in leftWorlds"
+          :key="w.id"
+          class="world"
+          :class="SHAPES[(i + 0) % SHAPES.length]"
+          :style="{ background: w.color }"
+          @click="openWorld(w)"
+        >
+          <GameArt :kind="`world-${w.id}`" />
+          <span class="label">{{ t.worlds[w.id] }}</span>
+        </button>
+      </nav>
+
       <button
         ref="galipEl"
         class="galip"
@@ -355,88 +392,42 @@ async function greet() {
         <GalipMascot :happy="happy" :shy="shy" :pose="pose" :flip="flip" :walking="walking" :action="action" />
       </button>
 
-      <nav class="tiles">
+      <nav class="worlds right">
         <button
-          v-for="(tile, i) in visibleTiles"
-          :key="tile.key"
-          class="tile"
-          :class="SHAPES[i % SHAPES.length]"
-          :style="{ background: tile.color }"
-          @click="play(tile.route)"
+          v-for="(w, i) in rightWorlds"
+          :key="w.id"
+          class="world"
+          :class="SHAPES[(i + 2) % SHAPES.length]"
+          :style="{ background: w.color }"
+          @click="openWorld(w)"
         >
-          <div class="art">
-            <template v-if="tile.key === 'shapes'">
-              <div class="mini"><ShapeIcon kind="star" :color="COLORS.yellow" /></div>
-              <div class="mini"><ShapeIcon kind="circle" :color="COLORS.blue" /></div>
-              <div class="mini"><ShapeIcon kind="triangle" :color="COLORS.red" /></div>
-            </template>
-            <template v-else-if="tile.key === 'count'">
-              <div v-for="n in 3" :key="n" class="mini numbered">
-                <CountItem kind="apple" />
-                <b>{{ n }}</b>
-              </div>
-            </template>
-            <template v-else-if="tile.key === 'animals'">
-              <div class="mini"><AnimalIcon kind="cow" /></div>
-              <div class="mini"><AnimalIcon kind="cat" /></div>
-              <div class="mini"><AnimalIcon kind="duck" /></div>
-            </template>
-            <template v-else-if="tile.key === 'memory'">
-              <div class="mini card-back" />
-              <div class="mini card-front"><AnimalIcon kind="pig" /></div>
-              <div class="mini card-front"><AnimalIcon kind="pig" /></div>
-            </template>
-            <template v-else-if="tile.key === 'patterns'">
-              <div class="mini small"><ShapeIcon kind="circle" :color="COLORS.red" /></div>
-              <div class="mini small"><ShapeIcon kind="square" :color="COLORS.blue" /></div>
-              <div class="mini small"><ShapeIcon kind="circle" :color="COLORS.red" /></div>
-              <div class="mini small question">?</div>
-            </template>
-            <template v-else-if="tile.key === 'music'">
-              <svg viewBox="0 0 100 70" class="xylo-art" aria-hidden="true">
-                <rect
-                  v-for="(c, i) in ['red', 'orange', 'yellow', 'green', 'blue', 'purple'] as const"
-                  :key="c"
-                  :x="4 + i * 16"
-                  :y="4 + i * 3"
-                  width="13"
-                  :height="62 - i * 6"
-                  rx="4"
-                  :fill="COLORS[c]"
-                />
-              </svg>
-            </template>
-            <template v-else-if="tile.key === 'shadows'">
-              <div class="mini shadow-art"><AnimalIcon kind="cat" /></div>
-              <div class="mini"><AnimalIcon kind="cat" /></div>
-            </template>
-            <template v-else-if="tile.key === 'sizes'">
-              <div class="mini tall"><AnimalIcon kind="pig" /></div>
-              <div class="mini tiny"><AnimalIcon kind="pig" /></div>
-            </template>
-            <template v-else-if="tile.key === 'letters'">
-              <div class="mini"><AnimalIcon kind="cow" /></div>
-              <div class="mini letter">K</div>
-            </template>
-            <template v-else-if="tile.key === 'paint'">
-              <svg viewBox="0 0 100 70" class="xylo-art" aria-hidden="true">
-                <path d="M8 50 Q28 8 48 40 T92 22" :stroke="COLORS.red" stroke-width="10" fill="none" stroke-linecap="round" />
-                <path d="M12 62 Q40 36 62 58 T92 48" :stroke="COLORS.blue" stroke-width="10" fill="none" stroke-linecap="round" />
-              </svg>
-            </template>
-            <template v-else>
-              <svg v-for="c in ['red', 'blue', 'green'] as const" :key="c" viewBox="0 0 60 100" class="mini balloon">
-                <path d="M30 70 Q24 85 32 98" stroke="#7a8796" stroke-width="2" fill="none" />
-                <ellipse cx="30" cy="36" rx="26" ry="32" :fill="COLORS[c]" />
-                <path d="M26 66 L34 66 L30 72 Z" :fill="COLORS[c]" />
-                <ellipse cx="20" cy="24" rx="5" ry="9" fill="rgba(255,255,255,0.5)" />
-              </svg>
-            </template>
-          </div>
-          <span class="label">{{ t.games[tile.key] }}</span>
+          <GameArt :kind="`world-${w.id}`" />
+          <span class="label">{{ t.worlds[w.id] }}</span>
         </button>
       </nav>
     </section>
+
+    <div v-if="openedWorld" class="backdrop" @click.self="openedWorld = null">
+      <div class="panel" role="dialog" :aria-label="t.worlds[openedWorld.id]" :style="{ background: openedWorld.color }">
+        <h2>{{ t.worlds[openedWorld.id] }}</h2>
+        <nav class="tiles">
+          <button
+            v-for="(g, i) in openedGames"
+            :key="g"
+            class="tile"
+            :class="SHAPES[i % SHAPES.length]"
+            :style="{ background: GAME_COLORS[g] }"
+            @click="play(g)"
+          >
+            <GameArt :kind="g" />
+            <span class="label">{{ t.games[g] }}</span>
+          </button>
+        </nav>
+        <button class="close" :aria-label="t.back" @click="openedWorld = null">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" /></svg>
+        </button>
+      </div>
+    </div>
 
     <svg
       v-for="h in hearts"
@@ -699,15 +690,17 @@ async function greet() {
   }
 }
 
+/* Querformat: links zwei Welten, in der Mitte Galip, rechts zwei Welten. */
 .content {
-  --galip: clamp(96px, 28vmin, 340px);
+  --galip: clamp(120px, 36vmin, 400px);
+  --card: clamp(120px, min(19vw, 31vh), 250px);
   position: relative;
   flex: 1;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3vw;
+  gap: clamp(12px, 3vw, 56px);
 }
 
 .galip {
@@ -719,28 +712,24 @@ async function greet() {
   filter: drop-shadow(0 0 20px rgba(255, 246, 232, 0.6));
 }
 
-/* Unterwegs ist Galip nicht antippbar, damit er keine Kacheln blockiert. */
+/* Unterwegs ist Galip nicht antippbar, damit er keine Welten blockiert. */
 .galip.away {
   pointer-events: none;
 }
 
-.tiles {
-  --gap: 24px;
-  --cols: 5;
-  --tile: clamp(110px, min(12vw, 22vh), 220px);
+.worlds {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--gap);
-  max-width: calc(var(--tile) * var(--cols) + var(--gap) * (var(--cols) - 1));
+  flex-direction: column;
+  gap: clamp(14px, 3vh, 30px);
 }
 
+.world,
 .tile {
   --lift: 0px;
   --tilt: 0deg;
   width: var(--tile);
-  flex: none;
   height: var(--tile);
+  flex: none;
   border-radius: var(--radius);
   box-shadow:
     inset 0 5px 0 rgba(255, 255, 255, 0.55),
@@ -750,129 +739,137 @@ async function greet() {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: calc(var(--tile) * 0.1) calc(var(--tile) * 0.06) calc(var(--tile) * 0.05);
+  padding: calc(var(--tile) * 0.12) calc(var(--tile) * 0.06) calc(var(--tile) * 0.06);
   transform: translateY(var(--lift)) rotate(var(--tilt));
   transition: transform 0.15s;
 }
 
-.tile:nth-child(even) {
-  --lift: calc(var(--tile) * 0.08);
-}
-
-.tile:nth-child(3n) {
-  --tilt: -2deg;
-}
-
-.tile:nth-child(3n + 1) {
-  --tilt: 1.5deg;
-}
-
-.tile.squircle {
-  border-radius: 34%;
-}
-
-.tile.arch {
-  border-radius: 50% 50% 24% 24% / 44% 44% 24% 24%;
-}
-
-.tile.round {
-  border-radius: 46%;
-}
-
-.tile.leaf {
-  border-radius: 46% 14% 46% 14%;
-}
-
+.world:active,
 .tile:active {
   transform: translateY(calc(var(--lift) + 4px)) rotate(var(--tilt)) scale(0.94);
 }
 
-.art {
-  flex: 1;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
+/* Welten sind so groß wie --card; Spiele im Fenster erben --tile vom Fenster. */
+.world {
+  --tile: var(--card);
 }
 
-.mini {
-  width: 30%;
-  aspect-ratio: 1;
-  position: relative;
+/* Die Welten schweben leicht versetzt um Galip, wie Stationen auf der Wiese. */
+.worlds.left .world:nth-child(1) {
+  --tilt: -2deg;
+  margin-right: calc(var(--card) * 0.25);
 }
 
-.xylo-art {
-  width: 80%;
+.worlds.left .world:nth-child(2) {
+  --tilt: 1.5deg;
+  margin-right: -2px;
 }
 
-.mini.letter {
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
-  background: #fff;
-  font-size: calc(var(--tile) * 0.17);
-  font-weight: 800;
-  color: #ff5a5f;
+.worlds.right .world:nth-child(1) {
+  --tilt: 2deg;
+  margin-left: -2px;
 }
 
-.mini.tall {
-  width: 42%;
+.worlds.right .world:nth-child(2) {
+  --tilt: -1.5deg;
+  margin-left: calc(var(--card) * 0.25);
 }
 
-.mini.tiny {
-  width: 24%;
+.squircle {
+  border-radius: 34%;
 }
 
-.shadow-art :deep(svg) {
-  filter: brightness(0) opacity(0.7);
+.arch {
+  border-radius: 50% 50% 24% 24% / 44% 44% 24% 24%;
 }
 
-.mini.small {
-  width: 21%;
+.round {
+  border-radius: 46%;
 }
 
-.card-back,
-.card-front {
-  border-radius: 10px;
-  border: 3px solid #fff;
+.leaf {
+  border-radius: 46% 14% 46% 14%;
 }
 
-.card-back {
-  background: linear-gradient(135deg, #8e7cf0 0%, #5b4bc4 100%);
-}
-
-.card-front {
-  background: #fff;
-  padding: 2px;
-}
-
-.question {
-  display: grid;
-  place-items: center;
-  border: 3px dashed #c98a5a;
-  border-radius: 10px;
-  font-weight: 800;
-  font-size: calc(var(--tile) * 0.12);
-  color: #c98a5a;
-}
-
-.mini.balloon {
-  aspect-ratio: 3 / 5;
-  height: auto;
-}
-
-.numbered b {
+/* Geöffnete Welt: ein Fenster mit den Spielen dieser Welt. */
+.backdrop {
   position: absolute;
-  right: -4px;
-  bottom: -6px;
-  width: calc(var(--tile) * 0.15);
-  height: calc(var(--tile) * 0.15);
-  border-radius: 50%;
-  background: #fff;
-  font-size: calc(var(--tile) * 0.09);
+  inset: 0;
+  z-index: 10;
   display: grid;
   place-items: center;
+  padding: 16px;
+  background: rgba(40, 24, 90, 0.55);
+  animation: fade-in 0.2s ease-out;
+}
+
+.panel {
+  --tile: clamp(100px, min(21vw, 34vh), 220px);
+  position: relative;
+  max-width: 100%;
+  padding: clamp(14px, 3vh, 28px) clamp(18px, 3vw, 40px) clamp(20px, 4vh, 36px);
+  border-radius: calc(var(--radius) * 1.4);
+  box-shadow:
+    inset 0 6px 0 rgba(255, 255, 255, 0.55),
+    0 20px 50px rgba(20, 10, 60, 0.5);
+  animation: pop-in 0.28s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.panel h2 {
+  margin: 0 0 clamp(8px, 2vh, 18px);
+  text-align: center;
+  font-size: clamp(24px, 5vmin, 48px);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.panel .tiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(12px, 2.4vmin, 28px);
+}
+
+.panel .tile {
+  background-clip: padding-box;
+}
+
+.close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: clamp(52px, 8vmin, 72px);
+  height: clamp(52px, 8vmin, 72px);
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow: var(--shadow);
+  display: grid;
+  place-items: center;
+}
+
+.close:active {
+  transform: scale(0.92);
+}
+
+.close svg {
+  width: 46%;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
 }
 
 .label {
@@ -926,33 +923,40 @@ async function greet() {
   place-items: center;
 }
 
-/* Hochformat: Galip über den Kacheln. */
+/* Hochformat: Galip groß oben, darunter die vier Welten im 2×2-Raster. */
 @media (max-aspect-ratio: 1/1) {
   .home {
     --album: 80px;
   }
 
   .content {
-    flex-direction: column;
-    gap: 2vh;
+    display: grid;
+    grid-template-columns: repeat(2, var(--card));
+    grid-auto-rows: var(--card);
+    justify-content: center;
+    align-content: center;
+    gap: clamp(14px, 2.6vh, 28px) clamp(14px, 4vw, 36px);
+    --card: clamp(110px, min(40vw, 22vh), 260px);
   }
 
   .galip {
-    width: clamp(96px, min(24vh, 52vw), 300px);
+    grid-column: 1 / -1;
+    grid-row: 1;
+    justify-self: center;
+    width: clamp(120px, min(28vh, 60vw), 340px);
+    margin-bottom: 1vh;
   }
 
+  .worlds {
+    display: contents;
+  }
 
-  /* Letzte Reihe linksbündig: rechts unten bleibt Platz für das Album. */
-  .tiles {
-    justify-content: flex-start;
-    width: calc(var(--tile) * var(--cols) + var(--gap) * (var(--cols) - 1));
-    --gap: clamp(10px, 2.4vw, 24px);
-    --cols: 3;
-    --tile: clamp(
-      84px,
-      min(calc((100vw - 2 * var(--pad) - 2 * var(--gap)) / 3), calc((100vh - 400px) / 4 - var(--gap))),
-      220px
-    );
+  .worlds .world {
+    margin: 0 !important;
+  }
+
+  .panel {
+    --tile: clamp(100px, min(38vw, 22vh), 220px);
   }
 }
 
@@ -980,23 +984,13 @@ async function greet() {
   }
 }
 
-/* Breites Hochformat (iPad): vier Spalten, drei Reihen. */
 @media (max-aspect-ratio: 1/1) and (min-width: 600px) {
   .home {
     --album: 104px;
   }
-
-  .tiles {
-    --cols: 4;
-    --tile: clamp(
-      110px,
-      min(calc((100vw - 2 * var(--pad) - 3 * var(--gap)) / 4), calc((100vh - 420px) / 3 - var(--gap))),
-      230px
-    );
-  }
 }
 
-/* Flaches Querformat (iPhone): zwei Reihen à sechs Kacheln, kleinerer Kopf. */
+/* Flaches Querformat (iPhone): kleinerer Kopf, kompaktere Welten. */
 @media (min-aspect-ratio: 1/1) and (max-height: 560px) {
   .home {
     --pad: 16px;
@@ -1004,20 +998,8 @@ async function greet() {
   }
 
   .content {
-    gap: 2vw;
-  }
-
-  .tiles {
-    --gap: clamp(8px, 1.6vw, 16px);
-    --cols: 6;
-    --tile: clamp(
-      60px,
-      min(
-        calc((100vw - 2 * var(--pad) - var(--galip) - 2vw - 5 * var(--gap)) / 6),
-        calc((100vh - 120px) / 2 - var(--gap))
-      ),
-      170px
-    );
+    --card: clamp(80px, min(18vw, 34vh), 170px);
+    --galip: clamp(100px, 40vh, 260px);
   }
 
   .logo {
