@@ -2,6 +2,7 @@
 import { onBeforeUnmount, onMounted, watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 
+import FriendFinale from '@/components/FriendFinale.vue'
 import GalipMascot from '@/components/GalipMascot.vue'
 import ParentGate from '@/components/ParentGate.vue'
 import { useT } from '@/lib/i18n'
@@ -81,6 +82,8 @@ onBeforeUnmount(() => {
       <component :is="Component" />
     </Transition>
   </RouterView>
+
+  <FriendFinale />
 
   <Transition name="page">
     <div v-if="usage.limitReached" class="pause">

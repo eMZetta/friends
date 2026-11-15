@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 const STORAGE_KEY = 'lumi.friendship'
 const ROUNDS_KEY = 'lumi.friendship.rounds'
+const FINALE_KEY = 'lumi.friendship.finale'
 
 /** So viele fertige Spielrunden braucht Galip, um dem Kind ein Herz mehr zu vertrauen. */
 export const ROUNDS_PER_HEART = 3
@@ -28,10 +29,22 @@ function loadRounds(): number {
   }
 }
 
+function loadFinaleSeen(): boolean {
+  try {
+    return localStorage.getItem(FINALE_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
 // Galip vertraut dem Kind mehr, wenn es ruhig und sanft spielt. Die Herzen gehen nie wieder verloren.
 export const useFriendship = defineStore('friendship', () => {
   const trust = ref(load())
   const rounds = ref(loadRounds())
+  /** Das Ende der Geschichte (Medaille „Beste Freunde") wurde schon einmal gezeigt. */
+  const finaleSeen = ref(loadFinaleSeen())
+  /** Die Abschlussszene soll gezeigt werden: beim ersten Mal von selbst, danach auf Wunsch aus dem Album. */
+  const finalePending = ref(trust.value >= MAX_TRUST && !finaleSeen.value)
 
   /** Ein Herz mehr; liefert true, wenn damit das letzte Herz erreicht wurde. */
   function grow(): boolean {
@@ -42,7 +55,23 @@ export const useFriendship = defineStore('friendship', () => {
     } catch {
       // Ohne Speicher gelten die Herzen nur für diese Sitzung.
     }
-    return trust.value === MAX_TRUST
+    const complete = trust.value === MAX_TRUST
+    if (complete && !finaleSeen.value) finalePending.value = true
+    return complete
+  }
+
+  function showFinale() {
+    if (trust.value >= MAX_TRUST) finalePending.value = true
+  }
+
+  function endFinale() {
+    finalePending.value = false
+    finaleSeen.value = true
+    try {
+      localStorage.setItem(FINALE_KEY, '1')
+    } catch {
+      // Ohne Speicher erscheint die Szene beim nächsten Start noch einmal.
+    }
   }
 
   /**
@@ -65,5 +94,5 @@ export const useFriendship = defineStore('friendship', () => {
     return earned
   }
 
-  return { trust, rounds, grow, finishRound }
+  return { trust, rounds, finaleSeen, finalePending, grow, finishRound, showFinale, endFinale }
 })

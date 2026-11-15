@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 
+import FriendMedal from '@/components/FriendMedal.vue'
 import GameShell from '@/components/GameShell.vue'
 import StickerArt from '@/components/StickerArt.vue'
 import { useT } from '@/lib/i18n'
 import { sfx } from '@/lib/sound'
 import { say } from '@/lib/speech'
 import { STICKERS, stickerName, type Sticker } from '@/lib/stickers'
+import { useFriendship } from '@/stores/friendship'
 import { useSettings } from '@/stores/settings'
 import { useStickers } from '@/stores/stickers'
 
 const t = useT()
 const settings = useSettings()
 const stickers = useStickers()
+const friendship = useFriendship()
 
 const prompt = computed(() => t.value.albumPrompt)
 const wiggling = ref<string | null>(null)
@@ -42,7 +45,11 @@ onMounted(() => {
 <template>
   <GameShell :prompt="prompt" background="linear-gradient(180deg, #ffe9b8 0%, #ffd6a0 100%)">
     <template #status>
-      <div class="count">
+      <div class="status">
+        <button v-if="friendship.finaleSeen" class="medal" :aria-label="t.bestFriends" @click="friendship.showFinale()">
+          <FriendMedal />
+        </button>
+        <div class="count">
         <svg viewBox="0 0 100 100" aria-hidden="true">
           <path
             d="M50 6 L61.8 37.6 L95.1 38.2 L69 59.4 L77.9 91.8 L50 73 L22.1 91.8 L31 59.4 L4.9 38.2 L38.2 37.6 Z"
@@ -53,6 +60,7 @@ onMounted(() => {
           />
         </svg>
         {{ stickers.collected.length }} / {{ STICKERS.length }}
+        </div>
       </div>
     </template>
 
@@ -168,6 +176,30 @@ onMounted(() => {
 
 .slot.wiggle .sticker {
   animation: wiggle 0.45s;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.medal {
+  width: 52px;
+  height: 64px;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.25));
+  animation: wobble 3s ease-in-out infinite;
+  transform-origin: 50% 0;
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
 }
 
 .count {

@@ -406,6 +406,11 @@
   resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-8.6.2.tgz#4a4d874b46a994a61734141250fb42b2e5737f0f"
   integrity sha512-YnVm0lRA1mQWK0SKd2bdJIOG+PXRRDDdndZ1+nGqeiob+QmHZmb4wWo5gVpWhoHO37pGi2qzH5w5WGvfKrs+Gg==
 
+"@capgo/native-purchases@^8.9.16":
+  version "8.9.16"
+  resolved "https://registry.yarnpkg.com/@capgo/native-purchases/-/native-purchases-8.9.16.tgz#c4a82015a67ab81c8b9fc29c308275d6fc89e933"
+  integrity sha512-NrW4+ll1+0y9nPYgdHdKZ1/kUtmzdW/GCNlc87DGzi0+0r2dRbd51cBf/UicT5nb0C/13+1G7K3+tXVRaSc+6Q==
+
 "@csstools/color-helpers@^6.1.2":
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/@csstools/color-helpers/-/color-helpers-6.1.2.tgz#41d1c66d9e5885a750d6512c786b3c45d5de3034"

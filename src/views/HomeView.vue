@@ -197,6 +197,9 @@ async function explore(token: number) {
     await wait(500)
     if (token !== run) return
 
+    // Beste Freunde: Galip verschenkt zwischendurch Herzen.
+    if (friendship.trust >= MAX_TRUST && Math.random() < 0.5) floatHearts()
+
     // Im Sitzen macht er meistens noch etwas, manchmal ein Nickerchen.
     const s = Math.random()
     if (s < 0.12) {
@@ -208,7 +211,7 @@ async function explore(token: number) {
 }
 
 /** Lässt ein paar Herzen aus Galip aufsteigen und zählt das Vertrauen hoch. */
-function earnHeart() {
+function floatHearts() {
   const el = galipEl.value
   if (el) {
     const rest = restCenter(el)
@@ -218,6 +221,10 @@ function earnHeart() {
     hearts.value.push(...added)
     void wait(2400).then(() => (hearts.value = hearts.value.filter((h) => !added.some((a) => a.id === h.id))))
   }
+}
+
+function earnHeart() {
+  floatHearts()
   if (friendship.grow()) say(t.value.friend)
 }
 
