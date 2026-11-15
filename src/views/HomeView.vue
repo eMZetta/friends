@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import GalipMascot from '@/components/GalipMascot.vue'
@@ -102,7 +102,8 @@ const hearts = ref<{ id: number; x: number; y: number }[]>([])
 const SPEED = 0.17 // Pixel pro Millisekunde: ruhiges Tempo
 const FLEE_SPEED = 0.32
 const COME_BACK_SPEED = 0.07 // sehr langsam und vorsichtig
-const WILD_TAPS = 5 // so viele Tipps innerhalb von 1,5 Sekunden erschrecken ihn
+// So viele Tipps innerhalb von 1,5 Sekunden erschrecken ihn. Je mehr er dem Kind vertraut, desto mehr hält er aus.
+const wildTaps = () => 5 + Math.floor(friendship.trust / 2)
 const CALM_MS = 3500
 const taps: number[] = []
 let lastTap = 0
@@ -174,8 +175,15 @@ async function explore(token: number) {
   while (token === run) {
     await wait(1500 + Math.random() * 2500)
     if (token !== run) return
+    // Anfangs bleibt er nah an seinem Platz, mit jedem Herz traut er sich weiter weg.
     const m = el.offsetWidth * 0.6
-    const ms = walkTo(m + Math.random() * (window.innerWidth - 2 * m), m + Math.random() * (window.innerHeight - 2 * m))
+    const reach = 0.3 + 0.14 * friendship.trust
+    const rx = (window.innerWidth / 2 - m) * reach
+    const ry = (window.innerHeight / 2 - m) * reach
+    const ms = walkTo(
+      window.innerWidth / 2 + (Math.random() * 2 - 1) * rx,
+      window.innerHeight / 2 + (Math.random() * 2 - 1) * ry,
+    )
     await wait(ms + 150)
     if (token !== run) return
 
@@ -264,7 +272,7 @@ function onPointerDown(e: PointerEvent) {
   while (taps.length && now - taps[0]! > 1500) taps.shift()
   taps.push(now)
   if (shy.value) return
-  if (taps.length >= WILD_TAPS) {
+  if (taps.length >= wildTaps()) {
     taps.length = 0
     void startle(e.clientX, e.clientY)
     return
@@ -299,9 +307,31 @@ async function throwBall(e: PointerEvent) {
   void explore(token)
 }
 
-onMounted(() => void explore(run))
+// Galips Geschichte: Eine Sprechblase erzählt, wie weit die Freundschaft schon ist.
+const bubble = ref(false)
+let bubbleTimer: number | undefined
+
+function showStory(ms = 6000) {
+  bubble.value = true
+  window.clearTimeout(bubbleTimer)
+  bubbleTimer = window.setTimeout(() => (bubble.value = false), ms)
+}
+
+watch(
+  () => friendship.trust,
+  () => {
+    showStory(7000)
+    say(t.value.story[friendship.trust]!)
+  },
+)
+
+onMounted(() => {
+  void explore(run)
+  timers.push(window.setTimeout(() => showStory(), 900))
+})
 onBeforeUnmount(() => {
   run++
+  window.clearTimeout(bubbleTimer)
   timers.forEach((id) => window.clearTimeout(id))
 })
 
@@ -310,6 +340,7 @@ async function greet() {
   if (fetching || shy.value) return
   sfx.tap()
   say(t.value.hello)
+  showStory()
   const token = ++run
   fetching = true
   happy.value = true
@@ -390,6 +421,9 @@ async function greet() {
         @click="greet"
       >
         <GalipMascot :happy="happy" :shy="shy" :pose="pose" :flip="flip" :walking="walking" :action="action" />
+        <Transition name="bubble">
+          <span v-if="bubble" class="bubble" data-testid="story">{{ t.story[friendship.trust] }}</span>
+        </Transition>
       </button>
 
       <nav class="worlds right">
@@ -710,6 +744,48 @@ async function greet() {
   flex: none;
   transition: transform 1.3s cubic-bezier(0.45, 0.05, 0.3, 1);
   filter: drop-shadow(0 0 20px rgba(255, 246, 232, 0.6));
+}
+
+/* Sprechblase über Galips Kopf: wandert mit ihm mit. */
+.bubble {
+  position: absolute;
+  left: 50%;
+  bottom: 96%;
+  width: max-content;
+  max-width: min(46vmin, 360px);
+  transform: translateX(-50%);
+  padding: 0.5em 0.9em;
+  border-radius: 22px;
+  background: var(--cream);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  font-size: clamp(14px, 2.6vmin, 24px);
+  font-weight: 800;
+  line-height: 1.2;
+  pointer-events: none;
+}
+
+.bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  margin-left: -10px;
+  border: 10px solid transparent;
+  border-top-color: var(--cream);
+}
+
+.bubble-enter-active,
+.bubble-leave-active {
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.bubble-enter-from,
+.bubble-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px) scale(0.9);
 }
 
 /* Unterwegs ist Galip nicht antippbar, damit er keine Welten blockiert. */

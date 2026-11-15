@@ -12,6 +12,8 @@ export function voiceLines(lang: Lang): { key: string; text: string }[] {
     m.hello,
     m.shy,
     m.friend,
+    ...m.story,
+    m.storyHeart,
     ...Object.values(m.games),
     ...m.praise,
     m.newSticker,

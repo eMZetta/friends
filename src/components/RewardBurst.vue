@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import GalipMascot from './GalipMascot.vue'
 import StickerArt from './StickerArt.vue'
 import { COLORS } from '@/lib/colors'
+import { MAX_TRUST, useFriendship } from '@/stores/friendship'
 import { useT } from '@/lib/i18n'
 import { pick, randInt } from '@/lib/random'
 import { sfx } from '@/lib/sound'
@@ -19,6 +20,9 @@ const emit = defineEmits<{ done: [] }>()
 const t = useT()
 const stickers = useStickers()
 const stats = useStats()
+const friendship = useFriendship()
+/** Dieses Mal ist Galip dem Kind ein Herz nähergekommen. */
+const grew = ref(false)
 const route = useRoute()
 const sticker = ref<Sticker | null>(null)
 const palette = Object.values(COLORS)
@@ -43,10 +47,13 @@ watch(
     stats.finishRound(String(route.name))
     // Every finished round earns a sticker for the album, until it is full.
     sticker.value = stickers.award()
+    // Galip schaut zu: Mit jeder Runde fasst er mehr Vertrauen.
+    grew.value = friendship.finishRound()
     const praise = pick(t.value.praise)
-    if (sticker.value) say(praise, t.value.newSticker)
+    if (grew.value) say(praise, t.value.storyHeart)
+    else if (sticker.value) say(praise, t.value.newSticker)
     else say(praise)
-    timer = window.setTimeout(() => emit('done'), sticker.value ? 2800 : 2000)
+    timer = window.setTimeout(() => emit('done'), grew.value ? 3800 : sticker.value ? 2800 : 2000)
   },
 )
 
@@ -70,12 +77,23 @@ onBeforeUnmount(() => window.clearTimeout(timer))
       />
       <div class="row">
         <div class="lumi">
-          <GalipMascot happy />
+          <GalipMascot :happy="friendship.trust > 0 || grew" :shy="friendship.trust === 0 && !grew" />
         </div>
         <div v-if="sticker" class="sticker">
           <StickerArt :sticker="sticker" />
         </div>
       </div>
+      <p class="trust" :aria-label="t.hearts">
+        <svg
+          v-for="n in MAX_TRUST"
+          :key="n"
+          viewBox="0 0 32 30"
+          :class="{ full: n <= friendship.trust, fresh: grew && n === friendship.trust }"
+          aria-hidden="true"
+        >
+          <path d="M16 28 C4 19 2 12 2 8.5 A7 7 0 0 1 16 6 A7 7 0 0 1 30 8.5 C30 12 28 19 16 28 Z" />
+        </svg>
+      </p>
     </div>
   </Transition>
 </template>
@@ -85,8 +103,11 @@ onBeforeUnmount(() => window.clearTimeout(timer))
   position: fixed;
   inset: 0;
   z-index: 50;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3vmin;
   background: rgba(255, 255, 255, 0.35);
 }
 
@@ -119,6 +140,42 @@ onBeforeUnmount(() => window.clearTimeout(timer))
 .lumi {
   width: min(40vmin, 300px);
   animation: grow 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.trust {
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--cream);
+  box-shadow: 0 4px 0 rgba(58, 44, 94, 0.18);
+}
+
+.trust svg {
+  width: clamp(24px, 5vmin, 40px);
+  fill: none;
+  stroke: #d9709a;
+  stroke-width: 2.5;
+}
+
+.trust svg.full {
+  fill: #ff6b8b;
+  stroke: #ff6b8b;
+}
+
+/* Das neue Herz springt auf: Galip hat gerade Vertrauen gefasst. */
+.trust svg.fresh {
+  animation: heart-pop 0.9s 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+@keyframes heart-pop {
+  from {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.5);
+  }
 }
 
 .confetti {
