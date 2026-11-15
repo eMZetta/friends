@@ -19,6 +19,8 @@
     "lint:eslint": "eslint . --fix --cache",
     "format": "prettier --write --experimental-cli src/",
     "voice:lines": "node scripts/voice-lines.mjs",
+    "audio:loop": "node scripts/make-loop.mjs",
+    "voice:import": "node scripts/import-voice.mjs",
     "assets": "node scripts/make-assets.mjs && capacitor-assets generate --ios",
     "ios:sync": "yarn build && cap sync ios",
     "store:check": "node scripts/check-store.mjs",

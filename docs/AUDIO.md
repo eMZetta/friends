@@ -28,6 +28,9 @@ dem benötigten Dateinamen und ob die Aufnahme schon existiert.
 - Stille am Anfang/Ende abschneiden, Lautstärke angleichen (z. B. Audacity: „Normalisieren“ auf −1 dB).
 - Format: MP3 mono, 44.1 kHz, 96–128 kbit/s. Alle 94 Zeilen zusammen ≈ 1–2 MB.
 
+**Aufnahme aufbereiten:** `yarn voice:import <aufnahme> "<satz>" de` schneidet die Stille ab, gleicht die
+Lautstärke an (−18 LUFS) und legt die Datei als MP3 mono unter dem richtigen Namen ab (braucht ffmpeg).
+
 **Alternative TTS:** Hochwertige KI-Stimmen sind möglich. Vor der Nutzung die Lizenz
 prüfen (kommerzielle Nutzung, Nutzung in Apps, keine Namensnennung nötig?).
 
@@ -53,3 +56,8 @@ sonniss.com (GDC-Bundles). Lizenz jeder Datei in `docs/CREDITS.md` notieren.
 Ablage: `src/assets/audio/music/loop.mp3` – ein nahtlos loopender, ruhiger Track
 (30–90 s). Sobald die Datei existiert, erscheint im Eltern-Bereich der Schalter „Musik“.
 Die Musik läuft leise (12 %) unter allem anderen.
+
+Ein normales Stück macht beim Wiederholen einen Sprung. `yarn audio:loop <stück.mp3> 4` blendet den Schluss
+über den Anfang und schreibt `music/loop.mp3` direkt an die richtige Stelle (braucht ffmpeg).
+
+Den Stand der Audioarbeit und die Lizenzen siehe `TODO.md` und `docs/CREDITS.md`.
