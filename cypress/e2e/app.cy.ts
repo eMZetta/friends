@@ -13,8 +13,18 @@ describe('Galip', () => {
     })
   })
 
-  it('shows a tile for every game', () => {
-    cy.get('.tile').should('have.length', GAMES.length)
+  it('shows the four worlds, together holding every game', () => {
+    cy.get('.world').should('have.length', 4)
+    let total = 0
+    for (let i = 0; i < 4; i++) {
+      cy.get('.world').eq(i).click()
+      cy.get('.panel .tile').then(($tiles) => {
+        total += $tiles.length
+      })
+      cy.get('.panel .close').click()
+      cy.get('.panel').should('not.exist')
+    }
+    cy.then(() => total).should('eq', GAMES.length)
   })
 
   it('opens every game and leaves it by holding the home button', () => {
@@ -28,7 +38,8 @@ describe('Galip', () => {
   })
 
   it('does not leave a game on a short tap of the home button', () => {
-    cy.get('.tile').first().click()
+    cy.get('.world').first().click()
+    cy.get('.panel .tile').first().click()
     cy.get('.round-btn.home').should('have.length', 1).trigger('pointerdown', { force: true })
     cy.get('.round-btn.home').trigger('pointerup', { force: true })
     cy.location('hash').should('include', '/play/')
@@ -47,7 +58,9 @@ describe('Galip', () => {
     cy.contains('h2', 'Einstellungen')
     cy.contains('.chips button', 'Memory').click()
     cy.contains('button', 'Schließen').click()
-    cy.get('.tile').should('have.length', GAMES.length - 1)
+    // Memory gehört zur ersten Welt („Knobeln"), dort bleiben drei von vier Spielen übrig.
+    cy.get('.world').first().click()
+    cy.get('.panel .tile').should('have.length', 3)
   })
 
   it('locks the parent gate after three wrong answers', () => {
@@ -59,6 +72,27 @@ describe('Galip', () => {
       if (i < 2) cy.get('.entry').should('not.have.class', 'shake')
     }
     cy.contains('Zu viele Versuche')
+  })
+})
+
+describe('first start', () => {
+  it('lets Galip hide behind the hill until he is greeted gently, then opens the home screen', () => {
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        win.localStorage.setItem('lumi.settings', JSON.stringify({ lang: 'de', voice: false, sound: false }))
+      },
+    })
+    cy.location('hash').should('eq', '#/intro')
+    cy.get('[data-testid="intro-line"]').should('contain', 'schüchtern')
+    // Ein einzelnes, ruhiges Antippen lockt ihn hervor.
+    cy.get('.intro').trigger('pointerdown', { force: true })
+    cy.get('[data-testid="intro-line"]', { timeout: 4000 }).should('contain', 'Ich bin Galip')
+    cy.get('.start', { timeout: 8000 }).click()
+    cy.location('hash').should('eq', '#/')
+    cy.get('.world').should('have.length', 4)
+    // Beim nächsten Start gibt es die Einführung nicht mehr.
+    cy.reload()
+    cy.location('hash').should('eq', '#/')
   })
 })
 

@@ -10,7 +10,6 @@ Sprechblasen, Medaille „Beste Freunde"), Szenerie und Galip in den Spielen, Ei
 - [ ] Belohnungsansicht mit Herzen und aufspringendem neuen Herz (nach drei fertigen Runden)
 - [ ] Sticker-Album und Schatten-Spiel mit den neuen Zeichnungen (Silhouetten-Filter)
 - [ ] Einführung: Sprechblase wechselt beim Erschrecken sofort auf „Hoppla!" (in der Automatisierung nicht sicher gesehen)
-- [ ] Cypress-Tests ausführen (`yarn test:e2e`), insbesondere nach den Änderungen am Startbildschirm (`.tile` gibt es dort jetzt erst im Welten-Fenster)
 
 ### Ideen und offene Punkte
 - [ ] **Herzen oben** auf dem Startbildschirm haben keine Erklärung: direkt an Galip hängen oder mit Beschriftung/Symbol versehen
@@ -21,7 +20,7 @@ Sprechblasen, Medaille „Beste Freunde"), Szenerie und Galip in den Spielen, Ei
       (siehe Memory „Galip drawing & icon pipeline": `make-galip-part.mjs`, `make-assets.mjs`, `capacitor-assets`)
 - [ ] **Spiel-Hintergründe:** Pastellverläufe der Spiele und die Buchstaben-Kacheln sind noch im alten Stil; an Galip-Look und Szenerie angleichen
 - [ ] **Ende der Geschichte** weiter ausbauen: ein Kind als Figur im Finale (größeres Zeichenprojekt)
-- [ ] **Tests:** Ansichten (Startbildschirm, Einführung, Finale) haben nur Store-Tests, keine Komponententests
+- [ ] **Tests:** Cypress deckt Welten, Einführung, Eltern-Bereich und alle Spiele ab (6 Tests, grün). Es fehlen Tests für Belohnung/Herzen, Finale und Album
 - [ ] Vue-DevTools-Leiste unten ist nur im Dev-Modus (`yarn dev`), nicht im Build; nichts zu tun, nur nicht verwechseln
 
 ## Sound (Stand 2026-11-15)

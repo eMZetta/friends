@@ -34,7 +34,7 @@ Vue 3 + TypeScript, Vite, Pinia, vue-router (Hash-Verlauf), Capacitor 8 (iOS/And
 yarn dev --port 5173   # Dev-Server (danach beenden, der Port bleibt sonst belegt)
 yarn build             # Typecheck + Build
 yarn test:unit --run   # Vitest einmalig
-yarn test:e2e          # Cypress gegen den Preview-Build
+yarn build-only && yarn test:e2e   # Cypress gegen den Preview-Build (vorher bauen, sonst testet es einen alten Stand)
 yarn voice:lines       # docs/voice-lines-*.csv neu erzeugen
 yarn voice:import <aufnahme> "<satz>" de   # Aufnahme zuschneiden, normalisieren, richtig benennen (ffmpeg)
 yarn audio:loop <stück.mp3> 4             # nahtlosen Musik-Loop erzeugen (ffmpeg)
@@ -52,7 +52,7 @@ yarn assets            # Icons/Splash aus Galips Zeichnung (siehe unten)
   Props `happy/shy/flip/walking/action`. Aktionen in `galipActions.ts`.
 - `src/components/GameArt.vue`: Vorschaubilder für Welten und Spiele. `AnimalIcon`, `ShapeIcon`, `CountItem`, `BalloonIcon`,
   `StickerArt`: Illustrationen. `RewardBurst.vue`: Belohnung nach einer Runde. `FriendFinale.vue`/`FriendMedal.vue`: Ende der Geschichte.
-  `ParentGate.vue`: Eltern-Bereich hinter einer Rechenaufgabe (Sprache, Schwierigkeit, Zeitlimit, Spiele ausblenden, Statistik, freiwillige „Kaffeekasse" über `@capgo/native-purchases`, schaltet nichts frei).
+  `ParentGate.vue`: Eltern-Bereich. Der Zugang verlangt, eine ausgeschriebene Zahl von 21 bis 99 einzutippen, und sperrt nach drei Fehlversuchen. Darin: Sprache, Schwierigkeit, Zeitlimit, Spiele ausblenden, Statistik und eine freiwillige „Kaffeekasse" über `@capgo/native-purchases` (schaltet nichts frei).
 - `src/lib/i18n.ts`: **alle Texte** (de und en, Typ folgt aus `de`). `src/lib/voiceLines.ts`: Liste aller gesprochenen Sätze.
 - `src/lib/speech.ts` (`say`, Dateiname `voiceKey`), `audio.ts`, `sound.ts`, `music.ts`: Ton. Ohne Audiodateien läuft alles mit
   Systemstimme und synthetischen Effekten, jede Datei unter `src/assets/audio/` ersetzt das Provisorium automatisch.
@@ -84,7 +84,8 @@ Galips Zeichnung ist die Quelle für App-Icon, Favicons und Splash: `assets/gali
 
 `src/lib/games.ts` (`GAME_IDS`), Route in `src/router/index.ts`, `GAME_COLORS` und `WORLDS` in `HomeView.vue`,
 Vorschau in `GameArt.vue`, Name in `i18n.ts` (`games`, de und en), Sätze in `voiceLines.ts`, Spielliste in `README.md`,
-`GAMES` in `cypress/e2e/app.cy.ts` und `scripts/screenshots.mjs`. Danach `yarn voice:lines`.
+`GAMES` in `cypress/e2e/app.cy.ts` (der Test zählt, dass die Welten zusammen alle Spiele enthalten) und bei Bedarf eine Szene in
+`scripts/screenshots.mjs`. Danach `yarn voice:lines`.
 
 ## Fallstricke (alle schon passiert)
 
