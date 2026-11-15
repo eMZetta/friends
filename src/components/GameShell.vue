@@ -2,14 +2,20 @@
 import { onBeforeUnmount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import GalipMascot from './GalipMascot.vue'
 import HintHand from './HintHand.vue'
 import type { Hint } from '@/lib/hints'
 import { say } from '@/lib/speech'
 import { sfx } from '@/lib/sound'
+import { MAX_TRUST, useFriendship } from '@/stores/friendship'
 
 const props = defineProps<{ prompt: string; background: string; hint?: Hint | null }>()
 
 const router = useRouter()
+const friendship = useFriendship()
+
+// Galip schaut beim Spielen zu: Ohne Herzen lugt er nur mit den Ohren ins Bild, mit jedem Herz traut er sich weiter vor.
+const hide = `${Math.round(52 - (friendship.trust / MAX_TRUST) * 52)}%`
 
 // The home button must be held briefly, so a stray toddler tap doesn't end the game.
 const HOLD_MS = 900
@@ -44,6 +50,13 @@ function repeatPrompt() {
 
 <template>
   <main class="shell" :style="{ background }">
+    <div class="scenery" aria-hidden="true">
+      <i class="hill far" />
+      <i class="hill near" />
+      <div class="buddy" :style="{ '--hide': hide }">
+        <GalipMascot :shy="friendship.trust === 0" :happy="friendship.trust >= 3" />
+      </div>
+    </div>
     <header class="bar">
       <button
         class="round-btn home"
@@ -87,6 +100,44 @@ function repeatPrompt() {
   flex-direction: column;
   padding: max(16px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right))
     max(16px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+}
+
+/* Sanfte Hügel und Galip am unteren Rand: gleiche Welt wie auf dem Startbildschirm, nur bei Tageslicht. */
+.scenery {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hill {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.hill.far {
+  left: -10%;
+  right: -10%;
+  bottom: -52vh;
+  height: 62vh;
+}
+
+.hill.near {
+  left: 35%;
+  right: -35%;
+  bottom: -56vh;
+  height: 62vh;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.buddy {
+  position: absolute;
+  left: max(10px, 2vmin);
+  bottom: 0;
+  width: clamp(110px, 24vmin, 240px);
+  transform: translateY(var(--hide));
+  transition: transform 1.2s ease-out;
 }
 
 .bar {
