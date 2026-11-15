@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 import AlbumView from '@/views/AlbumView.vue'
 import HomeView from '@/views/HomeView.vue'
+import IntroView from '@/views/IntroView.vue'
+import { introSeen } from '@/lib/intro'
 import ShapesGame from '@/views/games/ShapesGame.vue'
 import CountGame from '@/views/games/CountGame.vue'
 import BalloonsGame from '@/views/games/BalloonsGame.vue'
@@ -19,6 +21,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     { path: '/', name: 'home', component: HomeView },
+    { path: '/intro', name: 'intro', component: IntroView },
     { path: '/album', name: 'album', component: AlbumView },
     { path: '/play/shapes', name: 'shapes', component: ShapesGame },
     { path: '/play/count', name: 'count', component: CountGame },
@@ -33,5 +36,8 @@ const router = createRouter({
     { path: '/play/letters', name: 'letters', component: LettersGame },
   ],
 })
+
+// Beim allerersten Start wartet Galip hinter dem Hügel, bevor die App beginnt.
+router.beforeEach((to) => (to.name === 'home' && !introSeen() ? { name: 'intro' } : true))
 
 export default router

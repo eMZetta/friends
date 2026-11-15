@@ -150,6 +150,12 @@ const de = {
   ],
   storyHeart: 'Galip hat dich ein Stück lieber!',
   bestFriends: 'Beste Freunde!',
+  intro: {
+    peek: 'Pst! Da ist Galip. Er ist ein bisschen schüchtern. Tipp ihn ganz sanft an.',
+    hello: 'Hallo! Ich bin Galip. Ich spiele gern mit dir.',
+    go: "Wenn wir zusammen spielen, werden wir Freunde. Los geht's!",
+    start: "Los geht's",
+  },
   coffee: {
     title: 'Kaffeekasse',
     intro: 'Galip ist und bleibt gratis. Wenn du magst, kannst du freiwillig einen Kaffee spendieren – du bekommst dafür nichts freigeschaltet, es ändert sich nichts.',
@@ -328,6 +334,12 @@ const en: Messages = {
   ],
   storyHeart: 'Galip likes you a little more!',
   bestFriends: 'Best friends!',
+  intro: {
+    peek: 'Psst! That is Galip. He is a little shy. Tap him very gently.',
+    hello: 'Hello! I am Galip. I like to play with you.',
+    go: "When we play together, we become friends. Let's go!",
+    start: "Let's go",
+  },
   coffee: {
     title: 'Coffee box',
     intro: 'Galip is and stays free. If you like, you can voluntarily buy me a coffee – nothing gets unlocked and nothing changes.',
