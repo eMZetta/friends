@@ -19,6 +19,36 @@ Sprechblasen, Medaille „Beste Freunde"), Szenerie und Galip in den Spielen, Ei
 - [ ] **App-Icon/Splash** zeigen noch Galips Zeichnung von vorher; nach Änderungen an Galip neu erzeugen
       (siehe Memory „Galip drawing & icon pipeline": `make-galip-part.mjs`, `make-assets.mjs`, `capacitor-assets`)
 - [ ] **Spiel-Hintergründe:** Pastellverläufe der Spiele und die Buchstaben-Kacheln sind noch im alten Stil; an Galip-Look und Szenerie angleichen
+- [ ] **Idee: Eltern sprechen die Texte selbst ein** (eigene Stimme statt Systemstimme, auch als Lösung für Sound-Punkt „Sprachzeilen")
+  - **Ziel:** Im Eltern-Bereich gibt es eine Seite „Meine Stimme", auf der alle gesprochenen Sätze aufgelistet sind (Quelle: `voiceLines.ts`,
+    ~200 pro Sprache). Eltern, Onkel, Oma oder die Nichte selbst nehmen sie mit dem Mikrofon auf. Die Aufnahme ersetzt dann die Systemstimme.
+    Emotional passend zum Projekt: Das Kind hört die vertraute Stimme, und Galip „spricht" mit Onkel/Tante/Mama.
+  - **UX für Eltern ohne Technik-Kenntnis** (wichtigste Anforderung):
+    - Keine Dateien, keine Fachwörter („Aufnahme", „Sprechen", „Fertig"), alles mit großen Knöpfen, Symbolen und klarem Ablauf.
+    - Sätze nicht als lange Liste, sondern **nach Szenen gruppiert** und als geführter Weg: „Los geht's" führt Satz für Satz durch
+      („Lob nach einer Runde", „Galip begrüßt dich", „Tiere", „Zahlen" …). Fortschritt sichtbar („23 von 203 aufgenommen").
+    - **Beispiel-Szene zu jedem Satz:** Neben dem Text steht ein kleines Bild bzw. eine Mini-Vorschau der echten Spielsituation, in der das Kind den Satz hört
+      (z. B. Ballon-Spiel mit „Lass die roten Ballone platzen!", Belohnung mit Konfetti zu „Toll gemacht!", Galip-Sprechblase zu den Geschichts-Sätzen).
+      Wiederverwendbar: `GameArt.vue`, `AnimalIcon`, `GalipMascot`, `RewardBurst`; evtl. Standbild je Szene statt Live-Komponente.
+    - **Ablauf pro Satz:** Satz groß anzeigen, Knopf „Aufnehmen" (großer roter Kreis) mit kurzem Countdown 3-2-1, sichtbarer Pegel, automatisches Ende
+      bei Stille oder Knopf „Fertig", sofort **Anhören**, dann „Behalten" oder „Nochmal". Vorlesen der Systemstimme zum Vergleich ist erlaubt.
+    - Hilfe in einfachen Worten: Tipps vor dem Start („ruhiger Raum, Handy 20 cm vom Mund, freundlich und langsam sprechen wie mit dem Kind"),
+      Hinweis, wenn zu leise oder zu laut; automatisch Stille am Anfang/Ende abschneiden und Lautstärke angleichen (Web Audio im Gerät).
+    - Man kann jederzeit aufhören; ohne Aufnahme spricht weiter die Systemstimme (pro Satz einzeln, kein Alles-oder-nichts).
+      Einzelne Aufnahme löschen, neu aufnehmen, alle löschen. Mikrofon-Erlaubnis freundlich erklären, bevor das System fragt.
+    - Pro Sprache getrennt (de/en), ggf. mehrere Sprecher/Profile („Mama", „Onkel Michi") und Auswahl, wer gerade spricht: später prüfen.
+    - Vorschlag: zuerst nur **Kernsätze** (Begrüßung, Lob, Galips Geschichte, Spielnamen) empfehlen, die haben die größte Wirkung; Rest optional.
+  - **Technik / Hinweise für die Umsetzung:**
+    - Heute werden Aufnahmen **beim Build** per `import.meta.glob` gefunden (`src/lib/audio.ts`, `speech.ts`). Eigene Aufnahmen entstehen zur Laufzeit,
+      brauchen also Speicher auf dem Gerät (IndexedDB oder Capacitor Filesystem) und eine Suche in `say()`: erst Eltern-Aufnahme, dann gebündelte Datei,
+      dann Systemstimme. Mehrteilige Sätze nur mit Aufnahme spielen, wenn **alle** Teile aufgenommen sind (bestehende Regel beibehalten).
+    - Aufnehmen mit `getUserMedia` + `MediaRecorder`. Auf iOS/WKWebView (iPadOS 15) liefert er MP4/AAC statt WebM; `decodeAudioData` kann das. Auf echtem Gerät testen.
+      iOS braucht `NSMicrophoneUsageDescription` in `ios/App/App/Info.plist`, Android `RECORD_AUDIO` im Manifest (Text in Eltern-Sprache).
+    - Dateiname/Schlüssel wie bisher über `voiceKey(text)`; dynamische Sätze (Zahlen, `countGive(n, thing)`, Tiernamen) sind viele: gruppieren statt einzeln auflisten.
+    - **Datenschutz:** Aufnahmen bleiben nur auf dem Gerät, nichts wird hochgeladen (zum Versprechen „kein Tracking, offline" passend).
+      `website/privacy.html`, App-Store-Datenschutzangaben und `docs/STORE.md` müssen das Mikrofon erwähnen. Funktion nur hinter dem Eltern-Gate.
+    - Wird ein Text im Code geändert, ist die dazugehörige Aufnahme verwaist: in der Liste als „neu aufnehmen" markieren.
+    - Tests: Speicher-Logik (Schlüssel, Priorität der Quellen) per Vitest, Aufnahme-Ablauf per Cypress mit gefälschtem Mikrofon (`--use-fake-device-for-media-stream`).
 - [ ] **Ende der Geschichte** weiter ausbauen: ein Kind als Figur im Finale (größeres Zeichenprojekt)
 - [ ] **Tests:** Cypress deckt Welten, Einführung, Eltern-Bereich und alle Spiele ab (6 Tests, grün). Es fehlen Tests für Belohnung/Herzen, Finale und Album
 - [ ] Vue-DevTools-Leiste unten ist nur im Dev-Modus (`yarn dev`), nicht im Build; nichts zu tun, nur nicht verwechseln
