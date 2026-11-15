@@ -1,5 +1,29 @@
 # TODO
 
+## App-Eindruck: weg vom Hobbyprojekt (Stand 2026-11-15)
+
+Erledigt: Startbildschirm mit vier Welten, einheitlicher Illustrationsstil, Galips Geschichte (Vertrauen durch Spielrunden,
+Sprechblasen, Medaille „Beste Freunde"), Szenerie und Galip in den Spielen, Einführung beim ersten Start.
+
+### Ungeprüft (bitte einmal ansehen)
+- [ ] Hochformat und kleine Geräte (iPhone): Startbildschirm mit Welten, Fenster einer Welt, Einführung, Galip im Spielrahmen
+- [ ] Belohnungsansicht mit Herzen und aufspringendem neuen Herz (nach drei fertigen Runden)
+- [ ] Sticker-Album und Schatten-Spiel mit den neuen Zeichnungen (Silhouetten-Filter)
+- [ ] Einführung: Sprechblase wechselt beim Erschrecken sofort auf „Hoppla!" (in der Automatisierung nicht sicher gesehen)
+- [ ] Cypress-Tests ausführen (`yarn test:e2e`), insbesondere nach den Änderungen am Startbildschirm (`.tile` gibt es dort jetzt erst im Welten-Fenster)
+
+### Ideen und offene Punkte
+- [ ] **Herzen oben** auf dem Startbildschirm haben keine Erklärung: direkt an Galip hängen oder mit Beschriftung/Symbol versehen
+- [ ] **Übergänge zwischen Spielrunden:** Nach einer Runde geht es ohne Übergang weiter; sanfter Wechsel, vielleicht Galip kurz zeigen
+- [ ] **Eltern-Bereich, Store-Seite (`store/`) und Website (`website/`)** auf den Gesamteindruck prüfen; Screenshots (`scripts/screenshots.mjs`) und
+      Store-Texte an den neuen Startbildschirm und die Geschichte anpassen (Spielübersicht zeigt jetzt Welten statt 11 Kacheln)
+- [ ] **App-Icon/Splash** zeigen noch Galips Zeichnung von vorher; nach Änderungen an Galip neu erzeugen
+      (siehe Memory „Galip drawing & icon pipeline": `make-galip-part.mjs`, `make-assets.mjs`, `capacitor-assets`)
+- [ ] **Spiel-Hintergründe:** Pastellverläufe der Spiele und die Buchstaben-Kacheln sind noch im alten Stil; an Galip-Look und Szenerie angleichen
+- [ ] **Ende der Geschichte** weiter ausbauen: ein Kind als Figur im Finale (größeres Zeichenprojekt)
+- [ ] **Tests:** Ansichten (Startbildschirm, Einführung, Finale) haben nur Store-Tests, keine Komponententests
+- [ ] Vue-DevTools-Leiste unten ist nur im Dev-Modus (`yarn dev`), nicht im Build; nichts zu tun, nur nicht verwechseln
+
 ## Sound (Stand 2026-11-15)
 
 Die App läuft ohne Audiodateien (Systemstimme, synthetische Effekte). Jede Datei ersetzt das Provisorium
